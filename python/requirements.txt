@@ -1,0 +1,10 @@
+pandas
+numpy
+scikit-learn==1.9.0
+joblib
+fastapi
+uvicorn[standard]
+pydantic>=2.0
+python-dotenv
+httpx
+fastmcp
