@@ -7,20 +7,38 @@ const router = Router();
 
 router.post("/", validateInput, async (req, res, next) => {
   try {
-    // TODO: 1. Call predictRisk(req.cleanInput) and store as `inference`.
-    const inference = {}; 
+    // 1. Python: RF + z-bands + categorical signals + crisis rule + prompt
+    const inference = await predictRisk(req.cleanInput);
 
-    // TODO: 2. Call getAdvice({ prompt: inference.prompt, language: req.language })
-    // inside a try/catch block. If it fails or returns empty, fallback to
-    // inference.fallback and track the error message.
+    // 2. LLM with safe fallback
     let advice = "";
     let llmError = null;
+    try {
+      advice = await getAdvice({
+        prompt: inference.prompt,
+        language: req.language,
+      });
+      if (!advice) throw new Error("empty LLM response");
+    } catch (err) {
+      llmError = err.message;
+      advice = inference.fallback;
+    }
 
-    // TODO: 3. Send back a JSON response with inference.risk_score, risk_tier,
-    // decision, threshold, z_bands, categorical_signals, key_factors, crisis,
-    // prompt_type, plus language, advice, used_fallback, and llm_error.
-    res.json({});
-
+    res.json({
+      risk_score: inference.risk_score,
+      risk_tier: inference.risk_tier,
+      decision: inference.decision,
+      threshold: inference.threshold,
+      z_bands: inference.z_bands,
+      categorical_signals: inference.categorical_signals,
+      key_factors: inference.key_factors,
+      crisis: inference.crisis,
+      prompt_type: inference.prompt_type,
+      language: req.language,
+      advice,
+      used_fallback: Boolean(llmError),
+      llm_error: llmError,
+    });
   } catch (err) {
     next(err);
   }

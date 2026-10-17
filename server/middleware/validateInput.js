@@ -19,20 +19,40 @@ export async function validateInput(req, res, next) {
 
     const out = {};
 
-    // TODO: Loop through schema.numeric.
-    // Check if missing (400 "missing field"), if not a number (400 "must be numeric"),
-    // and if out of [min, max] range (400 "out of range").
-    // Assign valid numbers to `out[field.name]`.
+    // --- Numeric
+    for (const field of schema.numeric) {
+      const raw = features[field.name];
+      if (raw === undefined || raw === null || raw === "") {
+        return res.status(400).json({ error: `missing field: ${field.name}` });
+      }
+      const n = Number(raw);
+      if (!Number.isFinite(n)) {
+        return res.status(400).json({ error: `${field.name} must be numeric` });
+      }
+      if (n < field.min || n > field.max) {
+        return res.status(400).json({
+          error: `${field.name} out of range [${field.min}, ${field.max}]`,
+        });
+      }
+      out[field.name] = n;
+    }
 
-    // TODO: Loop through schema.categorical.
-    // Check if not a string (400 "must be a string"),
-    // and if not in field.allowed (400 "must be one of").
-    // Assign valid strings to `out[field.name]`.
+    // --- Categorical
+    for (const field of schema.categorical) {
+      const raw = features[field.name];
+      if (typeof raw !== "string") {
+        return res.status(400).json({ error: `${field.name} must be a string` });
+      }
+      if (!field.allowed.includes(raw)) {
+        return res.status(400).json({
+          error: `${field.name} must be one of ${field.allowed.join(", ")}`,
+        });
+      }
+      out[field.name] = raw;
+    }
 
     req.cleanInput = out;
-    
-    // TODO: Set req.language to `language` if it is in SUPPORTED_LANGS, otherwise "en".
-    
+    req.language = SUPPORTED_LANGS.includes(language) ? language : "en";
     next();
   } catch (err) {
     next(err);
