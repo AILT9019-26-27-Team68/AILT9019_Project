@@ -1,0 +1,39 @@
+:root {
+  --bg: #f6f7fb;
+  --card: #ffffff;
+  --ink: #1f2333;
+  --muted: #6b7280;
+  --line: #e5e7eb;
+  --accent: #3b5bdb;
+  --low: #d1fae5;
+  --mid: #fef9c3;
+  --high: #fee2e2;
+  --crisis: #b91c1c;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+}
+
+/* TODO: Add layout classes for .app, header h1, and header .sub */
+
+/* TODO: Style the .lang-toggle buttons (including the .active state) */
+
+/* TODO: Style the .disclaimer box (background, border, text color) */
+
+/* TODO: Style the .form, .grid (use CSS grid), label, input, select, and submit buttons */
+
+/* TODO: Style the .loading-box and the .spinner (use @keyframes for rotation) */
+
+/* TODO: Style the .result container and the .tier cards (.tier.very-low, .tier.low, etc.) */
+
+/* TODO: Style the .crisis-banner, .factors, .bands, and .advice sections */
+
+/* TODO: Style the .error banner and .fallback-note text */
+
+/* TODO: Style the footer */
