@@ -17,6 +17,9 @@ export default function App() {
 
   useEffect(() => {
     // TODO: Call fetchSchema(). On success, setSchema(). On catch, setError().
+    fetchSchema()
+      .then(setSchema)
+      .catch((e) => setError(e.message));
   }, []);
 
   async function handleSubmit(features) {
@@ -25,6 +28,17 @@ export default function App() {
     // TODO: On success, setResult(data).
     // TODO: On catch, setError(e.message).
     // TODO: finally, setLoading(false).
+    setLoading(true);
+    setError("");
+    try {
+      const data = await predict(features, language);
+      setResult(data);
+      console.log("[predict]", data);
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -39,10 +53,17 @@ export default function App() {
 
       {/* TODO: Display t.loadingForm if !schema and !error. */}
       {/* TODO: Display error banner if error is set. */}
+      {error && <div className="error">{error}</div>}
 
       {schema && (
         <>
           {/* TODO: Render <InputForm> passing schema, handleSubmit, loading, and t. */}
+          <InputForm
+            schema={schema}
+            onSubmit={handleSubmit}
+            loading={loading}
+            t={t}
+          />
 
           {/* TODO: If loading is true, render a div with className="loading-box" containing a spinner div, t.loadingTitle, and t.loadingSub. */}
 
