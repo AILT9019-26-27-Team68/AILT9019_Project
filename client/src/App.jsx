@@ -66,6 +66,13 @@ export default function App() {
           />
 
           {/* TODO: If loading is true, render a div with className="loading-box" containing a spinner div, t.loadingTitle, and t.loadingSub. */}
+          {loading && (
+            <div className="loading-box">
+              <div className="spinner" />
+              <p>{t.loadingTitle}</p>
+              <small>{t.loadingSub}</small>
+            </div>
+          )}
 
           {/* TODO: If result exists, render <RiskResult> passing result and t. */}
           {result && <RiskResult result={result} t={t} />}
