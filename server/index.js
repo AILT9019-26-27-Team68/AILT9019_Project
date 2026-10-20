@@ -21,8 +21,8 @@ app.use(morgan("dev"));
 
 app.get("/health", (_req, res) => res.json({ ok: true }));
 
-// TODO: Mount the schema route on "/api/schema"
-// TODO: Mount the predict route on "/api/predict"
+app.use("/api/schema", schemaRoute);
+app.use("/api/predict", predictRoute);
 
 app.use(errorHandler);
 
