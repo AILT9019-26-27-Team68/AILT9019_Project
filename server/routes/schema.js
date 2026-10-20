@@ -5,8 +5,8 @@ const router = Router();
 
 router.get("/", async (_req, res, next) => {
   try {
-    // TODO: Fetch the schema using getSchema() and send it as a JSON response.
-    res.json({}); 
+    // getSchema() is memoised in pythonBridge, so this is one call per process.
+    res.json(await getSchema());
   } catch (err) {
     next(err);
   }
