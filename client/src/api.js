@@ -17,7 +17,7 @@ const API_BASE = "/api";
  *   422 { errors: [...] }    -> FastAPI's compact validation handler
  * Anything else (a proxy error page, an HTML 502) is not JSON at all, so the
  * body parse must not be allowed to throw a confusing SyntaxError.
- */
+ */ 
 async function messageFor(res) {
   let text = "";
   try {
