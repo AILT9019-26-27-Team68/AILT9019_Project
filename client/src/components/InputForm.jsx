@@ -1,525 +1,291 @@
+import { useEffect, useMemo, useState } from "react";
+
+/* One stylesheet for the whole form; .hku- prefix keeps it isolated. */
+import "./css/InputForm.css";
+
 /* ---------------------------------------------------------------------------
- * InputForm.css — single stylesheet for the full-screen form.
- * Direction: "night sticker-book" — near-black green base, cream sticker
- * borders, glowing coral/sunshine/mint accents. Translucent frosted panels so
- * the liquid canvas glows through. Chunky borders + hard offset shadows kept.
- * Prefix .hku- keeps it isolated from styles.css.
+ * InputForm — "HKU registrar's ledger" edition.
+ *
+ * Hierarchy:
+ *   components/InputForm.jsx        this file — logic + markup only
+ *   components/css/InputForm.css    the form's single stylesheet
+ *   assets/hku-crest.png            HKU crest (used by App.jsx header)
+ *
+ * Contract with App.jsx is unchanged:
+ *   props : { schema, onSubmit, loading, t }
+ *   submit: onSubmit({ <field>: number|string, ... }) — numeric fields are
+ *   coerced client-side, categoricals stay "Yes"/"No" strings.
+ *
+ * All user-facing text comes from the i18n dictionary (t.*), so the form
+ * follows the selected language (en / zh-Hant / zh-Hans).
  * ------------------------------------------------------------------------ */
 
-/* ======================= 1. tokens ======================= */
-.hku-shell {
-  /* colour — glowing accents on near-black green */
-  --hku-coral: #ff6b4a;        /* primary action, active pills */
-  --hku-coral-hot: #ff8563;    /* hover */
-  --hku-sun: #ffd23f;          /* sticker badges, info bar, focus wash */
-  --hku-mint: #57d9a3;         /* hints */
-  --hku-night: #101b16;        /* panel base */
-  --hku-card: #1a2822;         /* raised surfaces: tooltip, seg, buttons */
-  --hku-cream: #1a2822;        /* legacy name, now the dark card tone */
-  --hku-edge: #e9e1ca;         /* light sticker borders (pop on dark) */
-  --hku-shadow: #050907;       /* hard offset shadows */
-  --hku-ink: #20100a;          /* dark text on bright fills */
-  --hku-text: #f2ecdd;         /* primary text */
-  --hku-muted: #a3b3a8;        /* hints, labels, secondary text */
-  --hku-brick: #ff8a75;        /* errors */
-  --hku-line: rgba(242, 236, 221, 0.3);
+/**
+ * Plain-language explanation per field, shown by the "i" button.
+ * The copy lives in i18n.js under `info`; keys match schema field names.
+ */
 
-  /* type — plain Times everywhere */
-  --hku-serif: "Times New Roman", Times, Georgia, serif;
-  --hku-sans: "Times New Roman", Times, Georgia, serif;
-
-  /* motion */
-  --hku-ease: cubic-bezier(0.16, 1, 0.3, 1);
-  --hku-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --hku-dur-fast: 160ms;
-  --hku-dur-base: 200ms;
-  --hku-dur-scene: 600ms;
+/** Schema-driven default: prefer the model's curated default, midpoint as safety net. */
+function defaultFor(field) {
+  const raw =
+    field.default !== undefined && field.default !== null
+      ? field.default
+      : (field.min + field.max) / 2;
+  return field.integer ? Math.round(raw) : raw;
 }
 
-/* ======================= 2. shell + rail (full screen) ======================= */
-.hku-shell {
-  position: relative;
-  display: grid;
-  grid-template-columns: minmax(300px, 380px) 1fr;
-  width: 100%;
-  min-height: calc(100vh - 96px);   /* fills the viewport under the top bar */
-  font-family: var(--hku-sans);
-  color: var(--hku-text);
-  text-align: left;
-  border-top: 3px solid var(--hku-shadow);
-}
+export default function InputForm({ schema, onSubmit, loading, t }) {
+  const initial = useMemo(() => {
+    const o = {};
+    for (const f of schema?.numeric || []) o[f.name] = defaultFor(f);
+    for (const f of schema?.categorical || []) o[f.name] = f.allowed[0];
+    return o;
+  }, [schema]);
 
-/* film grain over the whole panel — atmosphere, not flat fill */
-.hku-shell::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.06;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
+  const [values, setValues] = useState(initial);
+  const [touched, setTouched] = useState({});
+  const [attempted, setAttempted] = useState(false);
+  const [openInfo, setOpenInfo] = useState(null); // which field's "i" is open
 
-/* deep teal glass rail: translucent + blurred, halftone dots for playfulness */
-.hku-rail {
-  position: sticky;
-  top: 0;
-  align-self: start;
-  height: 100vh;
-  background:
-    radial-gradient(rgba(233, 225, 202, 0.06) 1.3px, transparent 1.4px) 0 0 / 16px 16px,
-    linear-gradient(168deg, rgba(9, 56, 46, 0.9), rgba(4, 26, 22, 0.95));
-  -webkit-backdrop-filter: blur(14px);
-  backdrop-filter: blur(14px);
-  color: var(--hku-text);
-  padding: 52px 40px 40px;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  border-right: 3px solid var(--hku-shadow);
-}
+  useEffect(() => {
+    setValues(initial);
+    setTouched({});
+    setAttempted(false);
+  }, [initial]);
 
-.hku-kicker {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: var(--hku-sun);
-  margin: 10px 0 0;
-}
+  if (!schema) return null;
 
-/* rail heading — "what this page is"; the page title lives in the top bar */
-.hku-rail-heading {
-  font-family: var(--hku-serif);
-  font-size: clamp(26px, 2.6vw, 36px);
-  font-weight: 700;
-  line-height: 1.08;
-  margin: 0;
-  color: var(--hku-text);
-}
-
-/* 1-2-3 how-it-works steps with coral number coins */
-.hku-steps {
-  list-style: none;
-  margin: 4px 0 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 13px;
-}
-
-.hku-steps li {
-  display: flex;
-  align-items: flex-start;
-  gap: 11px;
-  font-size: 13.5px;
-  line-height: 1.55;
-  color: rgba(242, 236, 221, 0.88);
-}
-
-.hku-step-no {
-  flex: 0 0 auto;
-  width: 23px;
-  height: 23px;
-  margin-top: 1px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background: var(--hku-coral);
-  border: 2px solid var(--hku-shadow);
-  box-shadow: 2px 2px 0 var(--hku-shadow);
-  color: var(--hku-ink);
-  font-weight: 700;
-  font-size: 12px;
-}
-
-.hku-rail-divider {
-  border: 0;
-  height: 2px;
-  background: rgba(233, 225, 202, 0.16);
-  margin: 10px 0 2px;
-}
-
-.hku-rail-label {
-  margin: 10px 0 4px;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--hku-sun);
-}
-
-.hku-rail-note {
-  margin: 0;
-  font-size: 12.5px;
-  line-height: 1.62;
-  color: rgba(242, 236, 221, 0.78);
-}
-
-.hku-rail-note strong { color: var(--hku-sun); }
-
-.hku-rail-foot {
-  margin-top: auto;
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: rgba(242, 236, 221, 0.45);
-}
-
-/* ======================= 3. ledger (dark frosted glass) ======================= */
-.hku-ledger {
-  background: rgba(13, 21, 18, 0.66);
-  -webkit-backdrop-filter: blur(18px) saturate(1.15);
-  backdrop-filter: blur(18px) saturate(1.15);
-  padding: 48px clamp(24px, 5vw, 72px) 56px;
-  display: flex;
-  flex-direction: column;
-  gap: 36px;
-  max-width: 1080px;
-  width: 100%;
-  margin: 0 auto;
-}
-
-.hku-group-head {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 22px;
-}
-
-/* group number = rotated sunshine sticker */
-.hku-group-no {
-  display: inline-block;
-  font-family: var(--hku-serif);
-  font-style: italic;
-  font-weight: 700;
-  font-size: 16px;
-  color: var(--hku-ink);
-  background: var(--hku-sun);
-  border: 2.5px solid var(--hku-shadow);
-  border-radius: 10px;
-  padding: 3px 14px;
-  box-shadow: 3px 3px 0 var(--hku-shadow);
-  transform: rotate(-2deg);
-}
-
-.hku-group-rule {
-  flex: 1;
-  height: 2px;
-  background: rgba(233, 225, 202, 0.35);
-  border: 0;
-  margin: 0;
-}
-
-.hku-fields {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 26px 28px;
-}
-
-/* alternating spans give the grid an editorial rhythm (3-3 / 2-2-2) */
-.hku-field         { grid-column: span 3; position: relative; }
-.hku-field--narrow { grid-column: span 2; position: relative; }
-
-/* reset fieldset chrome — groups are semantic, not visual boxes */
-.hku-group { border: 0; padding: 0; margin: 0; }
-
-/* ======================= 4. fields ======================= */
-.hku-labelrow {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  margin-bottom: 6px;
-}
-
-.hku-label {
-  display: block;
-  font-size: 12.5px;
-  font-weight: 700;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  color: var(--hku-muted);
-}
-
-/* --- "i" info button: what this field means, in plain words --- */
-.hku-info-btn {
-  width: 20px;
-  height: 20px;
-  padding: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: 2px solid var(--hku-edge);
-  border-radius: 50%;
-  background: var(--hku-card);
-  color: var(--hku-text);
-  font-family: var(--hku-serif);
-  font-style: italic;
-  font-weight: 700;
-  font-size: 11.5px;
-  line-height: 1;
-  cursor: help;
-  transition:
-    transform var(--hku-dur-fast) var(--hku-bounce),
-    background var(--hku-dur-fast) ease-out,
-    color var(--hku-dur-fast) ease-out;
-}
-
-.hku-info-btn:hover {
-  transform: scale(1.2) rotate(10deg);
-  background: var(--hku-sun);
-  color: var(--hku-ink);
-  border-color: var(--hku-shadow);
-}
-
-.hku-info-btn:focus-visible {
-  outline: 2px solid var(--hku-coral);
-  outline-offset: 2px;
-}
-
-.hku-info-btn[aria-expanded="true"] {
-  background: var(--hku-sun);
-  color: var(--hku-ink);
-  border-color: var(--hku-shadow);
-  transform: scale(1.1) rotate(-6deg);
-}
-
-/* --- the tooltip itself --- */
-.hku-pop {
-  position: absolute;
-  top: 32px;
-  left: 0;
-  z-index: 30;
-  width: min(250px, 70vw);
-  margin: 0;
-  padding: 10px 12px;
-  background: var(--hku-card);
-  border: 2px solid var(--hku-edge);
-  border-radius: 12px;
-  box-shadow: 4px 4px 0 var(--hku-shadow);
-  font-size: 12.5px;
-  line-height: 1.55;
-  color: var(--hku-text);
-  animation: hku-pop-in var(--hku-dur-base) var(--hku-bounce) both;
-}
-
-.hku-pop::before {
-  content: "";
-  position: absolute;
-  left: -2px;
-  top: 10px;
-  bottom: 10px;
-  width: 5px;
-  background: var(--hku-sun);
-  border-radius: 3px;
-}
-
-@keyframes hku-pop-in {
-  from { opacity: 0; transform: translateY(-5px) scale(0.97); }
-  to   { opacity: 1; transform: none; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hku-pop { animation: none; }
-}
-
-/* --- bottom-ruled input — glow on focus --- */
-.hku-input {
-  width: 100%;
-  border: 0;
-  border-bottom: 2.5px solid var(--hku-line);
-  background: transparent;
-  font-family: var(--hku-serif);
-  font-size: 27px;
-  font-weight: 500;
-  font-variant-numeric: tabular-nums;
-  color: var(--hku-text);
-  padding: 6px 2px 8px;
-  border-radius: 0;
-  transition:
-    border-color var(--hku-dur-base) ease-out,
-    background var(--hku-dur-base) ease-out;
-}
-
-.hku-input:hover:not(:disabled) { border-bottom-color: rgba(242, 236, 221, 0.55); }
-
-.hku-input:focus {
-  outline: none;
-  border-bottom-color: var(--hku-coral);
-  background: rgba(255, 210, 63, 0.12);   /* soft sunshine wash */
-}
-
-.hku-input:disabled { opacity: 0.45; }
-
-/* native spinners off — keyboard arrows still step */
-.hku-input::-webkit-outer-spin-button,
-.hku-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-.hku-input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
-
-.hku-input[aria-invalid="true"] { border-bottom-color: var(--hku-brick); }
-
-.hku-hint {
-  display: block;
-  margin-top: 6px;
-  font-size: 11.5px;
-  letter-spacing: 0.05em;
-  color: var(--hku-muted);
-}
-
-.hku-err {
-  display: block;
-  margin-top: 6px;
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--hku-brick);
-}
-
-/* --- segmented Yes/No (real radios, dressed chunky) --- */
-.hku-seg {
-  display: inline-flex;
-  border: 2.5px solid var(--hku-edge);
-  border-radius: 12px;
-  overflow: hidden;
-  background: var(--hku-card);
-  box-shadow: 3px 3px 0 var(--hku-shadow);
-}
-
-.hku-seg-opt {
-  position: relative;
-  min-width: 104px;
-  min-height: 46px;              /* ≥44px touch target */
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  color: var(--hku-text);
-  cursor: pointer;
-  user-select: none;
-  transition:
-    background var(--hku-dur-fast) ease-out,
-    color var(--hku-dur-fast) ease-out;
-}
-
-.hku-seg-opt + .hku-seg-opt { border-left: 2.5px solid var(--hku-edge); }
-
-.hku-seg-input {
-  position: absolute;
-  opacity: 0;
-  inset: 0;
-  margin: 0;
-  cursor: pointer;
-}
-
-.hku-seg-opt:hover:not(.is-on) { background: rgba(87, 217, 163, 0.14); }
-
-/* active choice = mint, not red — user asked the red gone */
-.hku-seg-opt.is-on {
-  background: var(--hku-mint);
-  color: #0c1a14;
-  font-weight: 700;
-}
-
-/* Keyboard focus only. Do not use :focus-within here: clicking a radio also
-   focuses it, which painted a coral outline around the Yes/No option on every
-   mouse click. :focus-visible keeps the ring for keyboard users only. */
-.hku-seg-opt:has(.hku-seg-input:focus-visible) {
-  outline: 2px solid var(--hku-coral);
-  outline-offset: 2px;
-  z-index: 1;
-}
-
-/* ======================= 5. summary + submit ======================= */
-.hku-summary {
-  border: 2.5px solid var(--hku-brick);
-  border-radius: 12px;
-  background: rgba(255, 107, 74, 0.1);
-  color: var(--hku-brick);
-  font-size: 13.5px;
-  line-height: 1.55;
-  padding: 12px 16px;
-  margin: 0;
-}
-
-/* the big happy button: deep coral slab, hard shadow, playful tilt.
-   Selector is prefixed with .hku-ledger on purpose — styles.css has
-   button[type="submit"] (0,1,1) which beats a bare .hku-submit (0,1,0)
-   and paints the button BLUE. (0,2,0) wins back the cascade. */
-.hku-ledger button.hku-submit {
-  width: 100%;
-  min-height: 58px;
-  border: 2.5px solid var(--hku-shadow);
-  border-radius: 14px;
-  background: var(--hku-coral-deep, #f05a33);
-  color: var(--hku-ink);
-  font-family: var(--hku-sans);
-  font-size: 17px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  cursor: pointer;
-  box-shadow: 6px 6px 0 var(--hku-shadow);
-  transition:
-    transform var(--hku-dur-fast) var(--hku-bounce),
-    box-shadow var(--hku-dur-fast) var(--hku-ease),
-    background var(--hku-dur-base) ease-out;
-}
-
-.hku-ledger button.hku-submit:hover:not(:disabled) {
-  background: var(--hku-coral);
-  transform: translate(-2px, -3px) rotate(-1deg);
-  box-shadow: 8px 9px 0 var(--hku-shadow);
-}
-
-.hku-ledger button.hku-submit:active:not(:disabled) {
-  transform: translate(4px, 4px);
-  box-shadow: 1px 1px 0 var(--hku-shadow);
-}
-
-.hku-ledger button.hku-submit:focus-visible {
-  outline: 2px solid var(--hku-sun);
-  outline-offset: 4px;
-}
-
-.hku-ledger button.hku-submit:disabled {
-  cursor: default;
-  opacity: 0.65;
-  box-shadow: 6px 6px 0 var(--hku-shadow);
-}
-
-/* ======================= 6. motion + responsive ======================= */
-/* one orchestrated entrance: rail → numerics → circumstances → button */
-.hku-rv { animation: hku-rise var(--hku-dur-scene) var(--hku-ease) both; }
-.hku-rv-1 { animation-delay: 0ms; }
-.hku-rv-2 { animation-delay: 90ms; }
-.hku-rv-3 { animation-delay: 180ms; }
-.hku-rv-4 { animation-delay: 270ms; }
-
-@keyframes hku-rise {
-  from { opacity: 0; transform: translateY(18px); }
-  to   { opacity: 1; transform: none; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hku-rv { animation: none; }
-  .hku-shell *, .hku-shell *::after { transition: none !important; }
-}
-
-@media (max-width: 860px) {
-  .hku-shell { grid-template-columns: 1fr; min-height: 0; }
-  .hku-rail {
-    position: static;
-    height: auto;
-    padding: 36px 28px 28px;
-    gap: 12px;
-    border-right: 0;
-    border-bottom: 3px solid var(--hku-shadow);
+  /* ---- client-side validation (messages come from t.errors) ---- */
+  function validate(field, raw) {
+    const s = String(raw).trim();
+    if (s === "") return t.errors.required;
+    const n = Number(s);
+    if (!Number.isFinite(n)) return t.errors.notNumber;
+    if (n < field.min || n > field.max)
+      return t.errors.outOfRange(field.min, field.max);
+    if (field.integer && !Number.isInteger(n)) return t.errors.notInteger;
+    return "";
   }
-  .hku-rail-foot { display: none; }
-  .hku-ledger { padding: 32px 22px 40px; }
-}
 
-@media (max-width: 560px) {
-  .hku-fields { grid-template-columns: 1fr 1fr; }
-  .hku-field, .hku-field--narrow { grid-column: span 2; }
+  const numericErrors = {};
+  for (const f of schema.numeric) {
+    const err = validate(f, values[f.name]);
+    if (err) numericErrors[f.name] = err;
+  }
+  const errorCount = Object.keys(numericErrors).length;
+  const showError = (name) => (attempted || touched[name]) && numericErrors[name];
+
+  function set(name, v) {
+    setValues((prev) => ({ ...prev, [name]: v }));
+  }
+
+  function toggleInfo(name) {
+    setOpenInfo((cur) => (cur === name ? null : name));
+  }
+
+  /** The little "i" button + tooltip for one field. */
+  function InfoToggle({ name }) {
+    const open = openInfo === name;
+    return (
+      <>
+        <button
+          type="button"
+          className="hku-info-btn"
+          aria-expanded={open}
+          aria-label={t.infoLabel(label(name))}
+          onClick={() => toggleInfo(name)}
+        >
+          i
+        </button>
+        {open && (
+          <p className="hku-pop" id={`hku-info-${name}`}>
+            {t.info?.[name] || label(name)}
+          </p>
+        )}
+      </>
+    );
+  }
+
+  function submit(e) {
+    e.preventDefault();
+    if (loading) return;
+    setAttempted(true);
+    setOpenInfo(null);
+    if (errorCount > 0) {
+      // move focus to the first offending input for keyboard users
+      const first = e.currentTarget.querySelector('[aria-invalid="true"]');
+      if (first) first.focus();
+      return;
+    }
+    // Contract: same flat shape as before, but numeric fields arrive as
+    // real numbers (already validated), so the backend's Number() pass
+    // is a no-op and the payload is machine-parseable as-is.
+    const payload = {};
+    for (const f of schema.numeric) {
+      payload[f.name] = f.integer
+        ? Math.round(Number(values[f.name]))
+        : Number(values[f.name]);
+    }
+    for (const f of schema.categorical) payload[f.name] = values[f.name];
+    onSubmit(payload);
+  }
+
+  function label(fieldName) {
+    return t.fields?.[fieldName] || fieldName.replaceAll("_", " ");
+  }
+
+  // Categorical values arrive as "Yes" / "No"; i18n may override them later
+  // with a t.options map, otherwise the raw value is shown.
+  function optionLabel(v) {
+    return t.options?.[v] || v;
+  }
+
+  // Alternating wide/narrow spans give the numeric grid an editorial rhythm
+  // (3-3 / 2-2-2) instead of a uniform card row.
+  const spanClass = (i) => (i < 2 ? "hku-field" : "hku-field hku-field--narrow");
+
+  return (
+    <section className="hku-shell" aria-busy={loading}>
+      {/* ---- intro rail: what this is, how it works, privacy ---- */}
+      <div className="hku-rail hku-rv hku-rv-1">
+        <p className="hku-kicker">{t.railKicker}</p>
+        <h2 className="hku-rail-heading">{t.railHeading}</h2>
+
+        <ol className="hku-steps">
+          <li>
+            <span className="hku-step-no">1</span>
+            <span>{t.railStep1}</span>
+          </li>
+          <li>
+            <span className="hku-step-no">2</span>
+            <span>{t.railStep2}</span>
+          </li>
+          <li>
+            <span className="hku-step-no">3</span>
+            <span>{t.railStep3}</span>
+          </li>
+        </ol>
+
+        <hr className="hku-rail-divider" />
+
+        <p className="hku-rail-label">{t.railPrivate}</p>
+        <p className="hku-rail-note">{t.disclaimerBody}</p>
+
+        <p className="hku-rail-label">{t.railSupport}</p>
+        <p className="hku-rail-note">
+          {t.disclaimerCrisis} <strong>{t.disclaimerCedars}</strong>{" "}
+          {t.disclaimerEmergency}
+        </p>
+
+        <p className="hku-rail-foot">{t.railFoot}</p>
+      </div>
+
+      {/* ---- the ledger ---- */}
+      <form className="hku-ledger" onSubmit={submit} noValidate>
+        {/* 01 — lifestyle numerics */}
+        <fieldset className="hku-group hku-rv hku-rv-2">
+          <div className="hku-group-head">
+            <span className="hku-group-no">01</span>
+            <hr className="hku-group-rule" />
+          </div>
+          <div className="hku-fields">
+            {schema.numeric.map((f, i) => {
+              const err = showError(f.name);
+              return (
+                <div key={f.name} className={spanClass(i)}>
+                  <div className="hku-labelrow">
+                    <label className="hku-label" htmlFor={`hku-${f.name}`}>
+                      {label(f.name)}
+                    </label>
+                    <InfoToggle name={f.name} />
+                  </div>
+                  <input
+                    id={`hku-${f.name}`}
+                    className="hku-input"
+                    type="number"
+                    inputMode="decimal"
+                    min={f.min}
+                    max={f.max}
+                    step={f.integer ? 1 : 0.5}
+                    value={values[f.name]}
+                    onChange={(e) => set(f.name, e.target.value)}
+                    onBlur={() => setTouched((p) => ({ ...p, [f.name]: true }))}
+                    disabled={loading}
+                    required
+                    aria-invalid={err ? "true" : "false"}
+                    aria-describedby={
+                      err
+                        ? `hku-err-${f.name}`
+                        : openInfo === f.name
+                          ? `hku-info-${f.name}`
+                          : undefined
+                    }
+                  />
+                  {err ? (
+                    <span className="hku-err" id={`hku-err-${f.name}`} role="alert">
+                      {err}
+                    </span>
+                  ) : (
+                    <small className="hku-hint">
+                      {t.range} {f.min}–{f.max}
+                    </small>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </fieldset>
+
+        {/* 02 — circumstances */}
+        <fieldset className="hku-group hku-rv hku-rv-3">
+          <div className="hku-group-head">
+            <span className="hku-group-no">02</span>
+            <hr className="hku-group-rule" />
+          </div>
+          <div className="hku-fields">
+            {schema.categorical.map((f) => (
+              <div key={f.name} className="hku-field">
+                <div className="hku-labelrow">
+                  <span className="hku-label">{label(f.name)}</span>
+                  <InfoToggle name={f.name} />
+                </div>
+                <div className="hku-seg" role="radiogroup" aria-label={label(f.name)}>
+                  {f.allowed.map((v) => (
+                    <label
+                      key={v}
+                      className={
+                        "hku-seg-opt" + (values[f.name] === v ? " is-on" : "")
+                      }
+                    >
+                      <input
+                        className="hku-seg-input"
+                        type="radio"
+                        name={f.name}
+                        value={v}
+                        checked={values[f.name] === v}
+                        onChange={() => set(f.name, v)}
+                        disabled={loading}
+                      />
+                      {optionLabel(v)}
+                    </label>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </fieldset>
+
+        {/* error summary — only after a blocked submit attempt */}
+        {attempted && errorCount > 0 && (
+          <p className="hku-summary" role="alert">
+            {t.errors.summary(errorCount)}
+          </p>
+        )}
+
+        <button type="submit" className="hku-submit hku-rv hku-rv-4" disabled={loading}>
+          {loading ? t.submitLoading : t.submit}
+        </button>
+      </form>
+    </section>
+  );
 }
