@@ -480,6 +480,13 @@ export default function App() {
           />
 
           {/* TODO: If loading is true, render a div with className="loading-box" containing a spinner div, t.loadingTitle, and t.loadingSub. */}
+          {loading && (
+            <div className="loading-box">
+              <div className="spinner" />
+              <p>{t.loadingTitle}</p>
+              <small>{t.loadingSub}</small>
+            </div>
+          )}
 
           {/* DONE: If result exists, render <RiskResult> inside a full-screen
               sticker-card modal. ✕ button, backdrop click, or Escape closes. */}
