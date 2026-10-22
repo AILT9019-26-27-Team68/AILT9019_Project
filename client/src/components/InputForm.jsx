@@ -9,36 +9,21 @@ import "./css/InputForm.css";
  * Hierarchy:
  *   components/InputForm.jsx        this file — logic + markup only
  *   components/css/InputForm.css    the form's single stylesheet
- *   assets/hku-logo.svg             HKU shield mark (used by App.jsx header)
+ *   assets/hku-crest.png            HKU crest (used by App.jsx header)
  *
  * Contract with App.jsx is unchanged:
  *   props : { schema, onSubmit, loading, t }
  *   submit: onSubmit({ <field>: number|string, ... }) — numeric fields are
  *   coerced client-side, categoricals stay "Yes"/"No" strings.
+ *
+ * All user-facing text comes from the i18n dictionary (t.*), so the form
+ * follows the selected language (en / zh-Hant / zh-Hans).
  * ------------------------------------------------------------------------ */
 
 /**
  * Plain-language explanation per field, shown by the "i" button.
- * Keys match schema field names exactly. English-only for now — the i18n
- * dictionary has no description keys; move these there when teammates
- * add one (e.g. t.info[name]).
+ * The copy lives in i18n.js under `info`; keys match schema field names.
  */
-const FIELD_INFO = {
-  Study_Hours_Per_Day:
-    "Hours you spend studying on a typical day. Example: 3 means about three hours of revision daily.",
-  Sleep_Hours_Per_Day:
-    "Hours of sleep on a typical night. 7–9 is the usual healthy range for students.",
-  Stress_Level:
-    "How stressed you feel day to day, from 0 (fully calm) to 10 (overwhelmed).",
-  Attendance_Rate:
-    "Percentage of classes you actually attend. 85 means you miss roughly 1 in 7.",
-  Age: "Your age in years.",
-  Extracurricular_Activities:
-    "Are you in any clubs, sports teams, or societies outside class?",
-  Exam_Proximity:
-    "Is an important exam coming up soon (within the next few weeks)?",
-  Part_Time_Job: "Do you currently work a part-time job alongside your studies?",
-};
 
 /** Schema-driven default: prefer the model's curated default, midpoint as safety net. */
 function defaultFor(field) {
@@ -70,16 +55,15 @@ export default function InputForm({ schema, onSubmit, loading, t }) {
 
   if (!schema) return null;
 
-  /* ---- client-side validation (messages are English-only for now; the
-     i18n dictionary has no error keys yet — add e.g. t.errors later) ---- */
+  /* ---- client-side validation (messages come from t.errors) ---- */
   function validate(field, raw) {
     const s = String(raw).trim();
-    if (s === "") return "This field is required.";
+    if (s === "") return t.errors.required;
     const n = Number(s);
-    if (!Number.isFinite(n)) return "Please enter a number.";
+    if (!Number.isFinite(n)) return t.errors.notNumber;
     if (n < field.min || n > field.max)
-      return `Please enter a value between ${field.min} and ${field.max}.`;
-    if (field.integer && !Number.isInteger(n)) return "Please enter a whole number.";
+      return t.errors.outOfRange(field.min, field.max);
+    if (field.integer && !Number.isInteger(n)) return t.errors.notInteger;
     return "";
   }
 
@@ -108,14 +92,14 @@ export default function InputForm({ schema, onSubmit, loading, t }) {
           type="button"
           className="hku-info-btn"
           aria-expanded={open}
-          aria-label={`About: ${label(name)}`}
+          aria-label={t.infoLabel(label(name))}
           onClick={() => toggleInfo(name)}
         >
           i
         </button>
         {open && (
           <p className="hku-pop" id={`hku-info-${name}`}>
-            {FIELD_INFO[name] || label(name)}
+            {t.info?.[name] || label(name)}
           </p>
         )}
       </>
@@ -164,36 +148,36 @@ export default function InputForm({ schema, onSubmit, loading, t }) {
     <section className="hku-shell" aria-busy={loading}>
       {/* ---- intro rail: what this is, how it works, privacy ---- */}
       <div className="hku-rail hku-rv hku-rv-1">
-        <p className="hku-kicker">The University of Hong Kong</p>
-        <h2 className="hku-rail-heading">Start your check-in</h2>
+        <p className="hku-kicker">{t.railKicker}</p>
+        <h2 className="hku-rail-heading">{t.railHeading}</h2>
 
         <ol className="hku-steps">
           <li>
             <span className="hku-step-no">1</span>
-            <span>Fill in the form on the right — it takes under a minute.</span>
+            <span>{t.railStep1}</span>
           </li>
           <li>
             <span className="hku-step-no">2</span>
-            <span>Our model reads your numbers and checks them instantly.</span>
+            <span>{t.railStep2}</span>
           </li>
           <li>
             <span className="hku-step-no">3</span>
-            <span>You get simple, friendly coaching advice based on the result.</span>
+            <span>{t.railStep3}</span>
           </li>
         </ol>
 
         <hr className="hku-rail-divider" />
 
-        <p className="hku-rail-label">Private by design</p>
+        <p className="hku-rail-label">{t.railPrivate}</p>
         <p className="hku-rail-note">{t.disclaimerBody}</p>
 
-        <p className="hku-rail-label">Need support?</p>
+        <p className="hku-rail-label">{t.railSupport}</p>
         <p className="hku-rail-note">
           {t.disclaimerCrisis} <strong>{t.disclaimerCedars}</strong>{" "}
           {t.disclaimerEmergency}
         </p>
 
-        <p className="hku-rail-foot">HKU · CEDARS · Student Wellbeing</p>
+        <p className="hku-rail-foot">{t.railFoot}</p>
       </div>
 
       {/* ---- the ledger ---- */}
@@ -294,8 +278,7 @@ export default function InputForm({ schema, onSubmit, loading, t }) {
         {/* error summary — only after a blocked submit attempt */}
         {attempted && errorCount > 0 && (
           <p className="hku-summary" role="alert">
-            {errorCount} field{errorCount > 1 ? "s" : ""} need
-            {errorCount > 1 ? "" : "s"} attention before the analysis can run.
+            {t.errors.summary(errorCount)}
           </p>
         )}
 
