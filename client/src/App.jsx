@@ -18,7 +18,7 @@ const APP_CSS = `
     z-index: 1;
     max-width: none;
     margin: 0;
-    padding: 0 0 48px;
+    padding: 0;
     font-family: "Times New Roman", Times, Georgia, serif;
     color: #f2ecdd;
   }
@@ -58,7 +58,7 @@ const APP_CSS = `
     background: #f5f1e4;
     border: 2.5px solid #e9e1ca;
     border-radius: 12px;
-    padding: 7px 10px;
+    padding: 6px 8px;
     box-shadow: 3px 3px 0 #050907;
   }
   .app-crest img { display: block; }
@@ -103,6 +103,47 @@ const APP_CSS = `
   .lang-toggle button:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 #050907; }
   .lang-toggle button:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 #050907; }
   .lang-toggle button.active { background: #ff6b4a; color: #20100a; border-color: #050907; }
+  /* phone header: crest + language on the first row, title and subtitle
+     full-width underneath — the desktop 3-column grid overflows a 390px
+     screen (the "简中" button used to be cut off the right edge). */
+  @media (max-width: 640px) {
+    header {
+      grid-template-columns: auto 1fr;
+      grid-template-rows: auto auto auto;
+      column-gap: 12px;
+      row-gap: 8px;
+      padding: 14px 16px 12px;
+    }
+    .app-crest {
+      grid-column: 1;
+      grid-row: 1;
+      align-self: center;
+      padding: 4px 6px;
+      border-radius: 10px;
+    }
+    .app-crest img { width: 44px; height: 46px; }
+    header h1 {
+      grid-column: 1 / -1;
+      grid-row: 2;
+      justify-self: start;
+      text-align: left;
+      font-size: 22px;
+    }
+    header .sub {
+      grid-column: 1 / -1;
+      grid-row: 3;
+      justify-self: start;
+      text-align: left;
+      font-size: 12.5px;
+      line-height: 1.45;
+    }
+    header .lang-toggle {
+      grid-column: 2;
+      grid-row: 1;
+      justify-self: end;
+      margin: 0;
+    }
+  }
   /* stub components render empty boxes — hide them until teammates fill them.
      The Disclaimer stub renders only a <br />, so :empty never matches —
      :has(> br:only-child) targets exactly that stub and stops matching
@@ -120,10 +161,226 @@ const APP_CSS = `
     padding: 12px 16px;
     font-size: 14px;
   }
+
+  /* ---- disclaimer: one dark footer bar instead of two light boxes ---- */
+  .app footer {
+    margin-top: 48px;
+    border-top: 2.5px solid rgba(233, 225, 202, 0.4);
+    background: linear-gradient(180deg, rgba(13, 21, 18, 0.9), rgba(9, 15, 12, 0.97));
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+  }
+  .app footer .disclaimer {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 18px 32px 22px;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    color: #a3b3a8;
+    font-size: 12.5px;
+    line-height: 1.65;
+    letter-spacing: 0.01em;
+  }
+  .app footer .disclaimer strong { color: #ffd23f; }
+
+  /* ---- loading: a floating dark sticker toast, not a light page slab ---- */
+  .app > .loading-box {
+    position: fixed;
+    left: 50%;
+    bottom: 26px;
+    z-index: 55;
+    width: min(520px, calc(100vw - 32px));
+    margin: 0;
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    transform: translateX(-50%);
+    background: linear-gradient(180deg, rgba(26, 40, 34, 0.97), rgba(16, 26, 21, 0.98));
+    border: 2.5px solid #e9e1ca;
+    border-radius: 16px;
+    box-shadow: 5px 6px 0 rgba(5, 9, 7, 0.9);
+    color: #f2ecdd;
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    animation: loading-pop 320ms cubic-bezier(0.2, 1.4, 0.4, 1) both;
+  }
+  @keyframes loading-pop {
+    from { opacity: 0; transform: translate(-50%, 14px) scale(0.96); }
+    to { opacity: 1; transform: translate(-50%, 0) scale(1); }
+  }
+  .app > .loading-box p {
+    margin: 2px 0 0;
+    font-family: inherit;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #f2ecdd;
+  }
+  .app > .loading-box small {
+    color: #a3b3a8;
+    font-size: 12px;
+    letter-spacing: 0.05em;
+  }
+  .app > .loading-box .spinner {
+    width: 30px;
+    height: 30px;
+    border: 3px solid rgba(233, 225, 202, 0.22);
+    border-top-color: #ff6b4a;
+    border-right-color: #ffd23f;
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+  }
+
+  /* ---- "view advice again" pull-tab: same sticker language as the cards ---- */
+  .result-reopen-wrap {
+    position: fixed;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 50;
+  }
+  .result-reopen {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 10px;
+    border: 2.5px solid #e9e1ca;
+    border-right: 0;
+    border-radius: 14px 0 0 14px;
+    background: #ff6b4a;
+    color: #20100a;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: -4px 4px 0 #050907;
+    animation: card-pop 480ms cubic-bezier(0.2, 1.45, 0.4, 1) both;
+    transition:
+      transform 160ms cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 160ms ease-out,
+      background 160ms ease-out;
+  }
+  .result-reopen:hover {
+    background: #ff8563;
+    transform: translate(-3px, -2px) rotate(-1deg);
+    box-shadow: -6px 6px 0 #050907;
+  }
+  .result-reopen:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 #050907; }
+  .result-reopen:focus-visible { outline: 2px solid #ffd23f; outline-offset: 3px; }
+  .result-reopen-icon { font-size: 17px; line-height: 1; }
+  .result-reopen-label {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    letter-spacing: 0.16em;
+    line-height: 1;
+  }
+
+  /* ---- rendered Markdown inside the advice card ---- */
+  .result-overlay .advice-md {
+    font-size: 15px;
+    line-height: 1.65;
+    color: #efe9d6;
+  }
+  .result-overlay .advice-md > :first-child { margin-top: 0; }
+  .result-overlay .advice-md > :last-child { margin-bottom: 0; }
+  .result-overlay .advice-md p { margin: 0 0 10px; }
+  .result-overlay .advice-md h4,
+  .result-overlay .advice-md h5,
+  .result-overlay .advice-md h6 {
+    margin: 15px 0 7px;
+    font-family: inherit;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #ffd23f;
+    line-height: 1.3;
+  }
+  .result-overlay .advice-md h4 { font-size: 14px; }
+  .result-overlay .advice-md h5 { font-size: 13px; }
+  .result-overlay .advice-md h6 { font-size: 12.5px; color: #a9e8c9; }
+  .result-overlay .advice-md ul,
+  .result-overlay .advice-md ol {
+    margin: 0 0 10px;
+    padding-left: 22px;
+    display: grid;
+    gap: 5px;
+  }
+  .result-overlay .advice-md li { padding-left: 2px; }
+  .result-overlay .advice-md li::marker { color: #ff6b4a; }
+  .result-overlay .advice-md strong { color: #fff7e2; }
+  .result-overlay .advice-md em { color: #ffd9a8; }
+  .result-overlay .advice-md a {
+    color: #ff9c7f;
+    text-decoration-color: rgba(255, 156, 127, 0.6);
+    text-underline-offset: 2px;
+  }
+  .result-overlay .advice-md a:hover { color: #ffd23f; }
+  .result-overlay .advice-md code {
+    background: #0b120e;
+    border: 1px solid #2a3b31;
+    border-radius: 6px;
+    padding: 1px 5px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.9em;
+    color: #a9e8c9;
+  }
+  .result-overlay .advice-md .md-pre {
+    margin: 0 0 10px;
+    padding: 10px 12px;
+    overflow-x: auto;
+    background: #0b120e;
+    border: 1px solid #2a3b31;
+    border-radius: 10px;
+  }
+  .result-overlay .advice-md .md-pre code {
+    padding: 0;
+    border: 0;
+    background: none;
+  }
+  .result-overlay .advice-md blockquote {
+    margin: 10px 0;
+    padding: 6px 0 6px 14px;
+    border-left: 3px solid #ffd23f;
+    color: #cfd8c5;
+    font-style: italic;
+  }
+  .result-overlay .advice-md hr {
+    border: 0;
+    border-top: 2px dashed rgba(233, 225, 202, 0.25);
+    margin: 14px 0;
+  }
+  @media (max-width: 720px) {
+    .result-reopen-wrap {
+      right: 12px;
+      top: auto;
+      bottom: 18px;
+      transform: none;
+    }
+    .result-reopen {
+      flex-direction: row;
+      gap: 8px;
+      padding: 11px 13px;
+      border-right: 2.5px solid #e9e1ca;
+      border-radius: 14px;
+      box-shadow: 4px 4px 0 #050907;
+      font-size: 12px;
+    }
+    .result-reopen-label { writing-mode: horizontal-tb; letter-spacing: 0.08em; }
+    /* leave room under the mobile pull-tab so it never covers the disclaimer */
+    .app.has-result footer .disclaimer { padding-bottom: 84px; }
+  }
+
   /* reduced motion: keep the dark base (drawn statically by the canvas),
      only the animation is skipped in JS */
   @media (prefers-reduced-motion: reduce) {
     .hku-rv, .hku-pop { animation: none !important; }
+    .app > .loading-box, .result-reopen { animation: none !important; }
   }
 
   /* ---- result modal: full-screen sticker card with a spring pop-in ---- */
@@ -398,7 +655,9 @@ function LiquidBackground() {
 
 export default function App() {
   const [schema, setSchema] = useState(null);
+  // `result` is kept after the modal closes so the advice can be reopened.
   const [result, setResult] = useState(null);
+  const [resultOpen, setResultOpen] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [language, setLanguage] = useState("en");
@@ -422,8 +681,10 @@ export default function App() {
     setError("");
     try {
       const data = await predict(features, language);
+      // Keep the new advice in state after the modal closes; it is the
+      // "previous advice" that the floating tab brings back.
       setResult(data);
-      console.log("[predict]", data);
+      setResultOpen(true);
     } catch (e) {
       setError(e.message);
     } finally {
@@ -432,14 +693,18 @@ export default function App() {
   }
 
   function closeResult() {
-    setResult(null);
+    setResultOpen(false);
+  }
+
+  function reopenResult() {
+    setResultOpen(true);
   }
 
   // while the result modal is open: Escape closes it, page scroll is locked
   useEffect(() => {
-    if (!result) return;
+    if (!resultOpen) return;
     const onKey = (e) => {
-      if (e.key === "Escape") setResult(null);
+      if (e.key === "Escape") setResultOpen(false);
     };
     window.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
@@ -447,27 +712,30 @@ export default function App() {
       window.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
     };
-  }, [result]);
+  }, [resultOpen]);
 
   return (
-    <div className="app">
+    <div className={`app${result ? " has-result" : ""}`}>
       <style>{APP_CSS}</style>
       <LiquidBackground />
 
       <header>
         <span className="app-crest">
-          <img src={hkuCrest} alt="The University of Hong Kong" width="60" height="44" />
+          <img
+            src={hkuCrest}
+            alt="The University of Hong Kong"
+            width="60"
+            height="63"
+          />
         </span>
         <h1>{t.title}</h1>
         <p className="sub">{t.subtitle}</p>
         <LanguageToggle value={language} onChange={setLanguage} />
       </header>
 
-      <Disclaimer t={t} />
-
       {/* TODO: Display t.loadingForm if !schema and !error. */}
       {/* DONE: Display error banner if error is set. */}
-      {error && <div className="error">{error}</div>}
+      {error && <div className="error" role="alert">{error}</div>}
 
       {schema && (
         <>
@@ -481,29 +749,47 @@ export default function App() {
 
           {/* TODO: If loading is true, render a div with className="loading-box" containing a spinner div, t.loadingTitle, and t.loadingSub. */}
           {loading && (
-            <div className="loading-box">
+            <div className="loading-box" role="status" aria-live="polite">
               <div className="spinner" />
               <p>{t.loadingTitle}</p>
               <small>{t.loadingSub}</small>
             </div>
           )}
 
+          {/* Only a real previous result gets a tab: no empty advice on load. */}
+          {result && !resultOpen && (
+            <div className="result-reopen-wrap">
+              <button
+                type="button"
+                className="result-reopen"
+                onClick={reopenResult}
+                aria-label={t.viewAdvice}
+              >
+                <span className="result-reopen-icon" aria-hidden="true">
+                  ↺
+                </span>
+                <span className="result-reopen-label">{t.viewAdvice}</span>
+              </button>
+            </div>
+          )}
+
           {/* DONE: If result exists, render <RiskResult> inside a full-screen
-              sticker-card modal. ✕ button, backdrop click, or Escape closes. */}
-          {result && (
+              sticker-card modal. ✕ button, backdrop click, or Escape closes;
+              closing keeps the result so the tab above can reopen it. */}
+          {result && resultOpen && (
             <div className="result-overlay" onClick={closeResult}>
               <div
                 className="result-card"
                 role="dialog"
                 aria-modal="true"
-                aria-label="Check-in result"
+                aria-label={t.resultTitle}
                 onClick={(e) => e.stopPropagation()}
               >
                 <button
                   type="button"
                   className="result-close"
                   onClick={closeResult}
-                  aria-label="Close result"
+                  aria-label={t.closeResult}
                 >
                   ✕
                 </button>
