@@ -1,148 +1,213 @@
 /* ---------------------------------------------------------------------------
- * InputForm.css — the single stylesheet for the "HKU registrar's ledger"
- * form. Everything lives here: tokens at the top, then shell/rail layout,
- * then field-level styling. Selector prefix .hku- keeps it isolated from
- * styles.css. Restyling = edit this one file.
+ * InputForm.css — single stylesheet for the full-screen form.
+ * Direction: "night sticker-book" — near-black green base, cream sticker
+ * borders, glowing coral/sunshine/mint accents. Translucent frosted panels so
+ * the liquid canvas glows through. Chunky borders + hard offset shadows kept.
+ * Prefix .hku- keeps it isolated from styles.css.
  * ------------------------------------------------------------------------ */
-
-/* Display (Fraunces) + body (Karla); CJK falls back to system faces. */
-@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Karla:wght@400;500;700&display=swap");
 
 /* ======================= 1. tokens ======================= */
 .hku-shell {
-  /* colour */
-  --hku-green: #00534e;        /* dominant surface / primary action */
-  --hku-green-deep: #04352f;   /* rail background, button hover */
-  --hku-gold: #c9a24b;         /* single accent: rules, crest, focus rings */
-  --hku-paper: #f6f3ec;        /* ledger surface */
-  --hku-paper-dim: rgba(243, 239, 230, 0.72);
-  --hku-ink: #22302c;          /* body text on paper */
-  --hku-muted: #5c6b64;        /* hints, secondary text */
-  --hku-brick: #a63a22;        /* errors (warm, palette-consistent) */
-  --hku-line: rgba(34, 48, 44, 0.22);
+  /* colour — glowing accents on near-black green */
+  --hku-coral: #ff6b4a;        /* primary action, active pills */
+  --hku-coral-hot: #ff8563;    /* hover */
+  --hku-sun: #ffd23f;          /* sticker badges, info bar, focus wash */
+  --hku-mint: #57d9a3;         /* hints */
+  --hku-night: #101b16;        /* panel base */
+  --hku-card: #1a2822;         /* raised surfaces: tooltip, seg, buttons */
+  --hku-cream: #1a2822;        /* legacy name, now the dark card tone */
+  --hku-edge: #e9e1ca;         /* light sticker borders (pop on dark) */
+  --hku-shadow: #050907;       /* hard offset shadows */
+  --hku-ink: #20100a;          /* dark text on bright fills */
+  --hku-text: #f2ecdd;         /* primary text */
+  --hku-muted: #a3b3a8;        /* hints, labels, secondary text */
+  --hku-brick: #ff8a75;        /* errors */
+  --hku-line: rgba(242, 236, 221, 0.3);
 
-  /* type */
-  --hku-serif: "Fraunces", Georgia, "Noto Serif TC", serif;
-  --hku-sans: "Karla", "PingFang TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  /* type — plain Times everywhere */
+  --hku-serif: "Times New Roman", Times, Georgia, serif;
+  --hku-sans: "Times New Roman", Times, Georgia, serif;
 
   /* motion */
   --hku-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --hku-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
   --hku-dur-fast: 160ms;
-  --hku-dur-base: 180ms;
+  --hku-dur-base: 200ms;
   --hku-dur-scene: 600ms;
 }
 
-/* ======================= 2. shell + rail ======================= */
+/* ======================= 2. shell + rail (full screen) ======================= */
 .hku-shell {
   position: relative;
   display: grid;
-  grid-template-columns: 320px 1fr;
-  max-width: 1060px;
-  margin: 8px auto 32px;
-  border-radius: 18px;
-  overflow: hidden;
-  border: 1px solid rgba(4, 53, 47, 0.25);
-  box-shadow:
-    0 2px 6px rgba(4, 53, 47, 0.08),
-    0 24px 64px rgba(4, 53, 47, 0.18);
+  grid-template-columns: minmax(300px, 380px) 1fr;
+  width: 100%;
+  min-height: calc(100vh - 96px);   /* fills the viewport under the top bar */
   font-family: var(--hku-sans);
-  color: var(--hku-ink);
+  color: var(--hku-text);
   text-align: left;
+  border-top: 3px solid var(--hku-shadow);
 }
 
-/* paper grain over the whole panel — atmosphere, not flat fill */
+/* film grain over the whole panel — atmosphere, not flat fill */
 .hku-shell::after {
   content: "";
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.05;
+  opacity: 0.06;
   mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
+/* deep teal glass rail: translucent + blurred, halftone dots for playfulness */
 .hku-rail {
-  position: relative;
+  position: sticky;
+  top: 0;
+  align-self: start;
+  height: 100vh;
   background:
-    radial-gradient(26rem 20rem at -10% -10%, rgba(201, 162, 75, 0.14), transparent 60%),
-    var(--hku-green-deep);
-  color: #f3efe6;
-  padding: 44px 32px 36px;
+    radial-gradient(rgba(233, 225, 202, 0.06) 1.3px, transparent 1.4px) 0 0 / 16px 16px,
+    linear-gradient(168deg, rgba(9, 56, 46, 0.9), rgba(4, 26, 22, 0.95));
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  color: var(--hku-text);
+  padding: 52px 40px 40px;
   display: flex;
   flex-direction: column;
   gap: 18px;
+  border-right: 3px solid var(--hku-shadow);
 }
-
-.hku-crest { display: block; }
 
 .hku-kicker {
   font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: var(--hku-gold);
-  margin: 6px 0 0;
+  color: var(--hku-sun);
+  margin: 10px 0 0;
 }
 
-.hku-title {
+/* rail heading — "what this page is"; the page title lives in the top bar */
+.hku-rail-heading {
   font-family: var(--hku-serif);
-  font-size: 30px;
-  font-weight: 600;
+  font-size: clamp(26px, 2.6vw, 36px);
+  font-weight: 700;
   line-height: 1.08;
-  letter-spacing: -0.01em;
   margin: 0;
+  color: var(--hku-text);
 }
 
-.hku-sub {
-  font-size: 13.5px;
-  line-height: 1.65;
-  color: var(--hku-paper-dim);
-  margin: 0;
-}
-
-.hku-rule {
-  width: 44px;
-  height: 2px;
-  background: var(--hku-gold);
-  border: 0;
+/* 1-2-3 how-it-works steps with coral number coins */
+.hku-steps {
+  list-style: none;
   margin: 4px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
 }
+
+.hku-steps li {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: rgba(242, 236, 221, 0.88);
+}
+
+.hku-step-no {
+  flex: 0 0 auto;
+  width: 23px;
+  height: 23px;
+  margin-top: 1px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--hku-coral);
+  border: 2px solid var(--hku-shadow);
+  box-shadow: 2px 2px 0 var(--hku-shadow);
+  color: var(--hku-ink);
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.hku-rail-divider {
+  border: 0;
+  height: 2px;
+  background: rgba(233, 225, 202, 0.16);
+  margin: 10px 0 2px;
+}
+
+.hku-rail-label {
+  margin: 10px 0 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--hku-sun);
+}
+
+.hku-rail-note {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.62;
+  color: rgba(242, 236, 221, 0.78);
+}
+
+.hku-rail-note strong { color: var(--hku-sun); }
 
 .hku-rail-foot {
   margin-top: auto;
   font-size: 11px;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: rgba(243, 239, 230, 0.45);
+  color: rgba(242, 236, 221, 0.45);
 }
 
-/* ======================= 3. ledger ======================= */
+/* ======================= 3. ledger (dark frosted glass) ======================= */
 .hku-ledger {
-  background: var(--hku-paper);
-  padding: 36px 40px 32px;
+  background: rgba(13, 21, 18, 0.66);
+  -webkit-backdrop-filter: blur(18px) saturate(1.15);
+  backdrop-filter: blur(18px) saturate(1.15);
+  padding: 48px clamp(24px, 5vw, 72px) 56px;
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 36px;
+  max-width: 1080px;
+  width: 100%;
+  margin: 0 auto;
 }
 
 .hku-group-head {
   display: flex;
-  align-items: baseline;
-  gap: 14px;
-  margin-bottom: 18px;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 22px;
 }
 
+/* group number = rotated sunshine sticker */
 .hku-group-no {
+  display: inline-block;
   font-family: var(--hku-serif);
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--hku-gold);
+  font-style: italic;
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--hku-ink);
+  background: var(--hku-sun);
+  border: 2.5px solid var(--hku-shadow);
+  border-radius: 10px;
+  padding: 3px 14px;
+  box-shadow: 3px 3px 0 var(--hku-shadow);
+  transform: rotate(-2deg);
 }
 
 .hku-group-rule {
   flex: 1;
-  height: 1px;
-  background: var(--hku-line);
+  height: 2px;
+  background: rgba(233, 225, 202, 0.35);
   border: 0;
   margin: 0;
 }
@@ -150,38 +215,126 @@
 .hku-fields {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  gap: 22px 24px;
+  gap: 26px 28px;
 }
 
 /* alternating spans give the grid an editorial rhythm (3-3 / 2-2-2) */
-.hku-field         { grid-column: span 3; }
-.hku-field--narrow { grid-column: span 2; }
+.hku-field         { grid-column: span 3; position: relative; }
+.hku-field--narrow { grid-column: span 2; position: relative; }
 
 /* reset fieldset chrome — groups are semantic, not visual boxes */
 .hku-group { border: 0; padding: 0; margin: 0; }
 
 /* ======================= 4. fields ======================= */
-.hku-label {
-  display: block;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--hku-muted);
+.hku-labelrow {
+  display: flex;
+  align-items: center;
+  gap: 7px;
   margin-bottom: 6px;
 }
 
-/* bottom-ruled input — a ledger line, not a boxed widget */
+.hku-label {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--hku-muted);
+}
+
+/* --- "i" info button: what this field means, in plain words --- */
+.hku-info-btn {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--hku-edge);
+  border-radius: 50%;
+  background: var(--hku-card);
+  color: var(--hku-text);
+  font-family: var(--hku-serif);
+  font-style: italic;
+  font-weight: 700;
+  font-size: 11.5px;
+  line-height: 1;
+  cursor: help;
+  transition:
+    transform var(--hku-dur-fast) var(--hku-bounce),
+    background var(--hku-dur-fast) ease-out,
+    color var(--hku-dur-fast) ease-out;
+}
+
+.hku-info-btn:hover {
+  transform: scale(1.2) rotate(10deg);
+  background: var(--hku-sun);
+  color: var(--hku-ink);
+  border-color: var(--hku-shadow);
+}
+
+.hku-info-btn:focus-visible {
+  outline: 2px solid var(--hku-coral);
+  outline-offset: 2px;
+}
+
+.hku-info-btn[aria-expanded="true"] {
+  background: var(--hku-sun);
+  color: var(--hku-ink);
+  border-color: var(--hku-shadow);
+  transform: scale(1.1) rotate(-6deg);
+}
+
+/* --- the tooltip itself --- */
+.hku-pop {
+  position: absolute;
+  top: 32px;
+  left: 0;
+  z-index: 30;
+  width: min(250px, 70vw);
+  margin: 0;
+  padding: 10px 12px;
+  background: var(--hku-card);
+  border: 2px solid var(--hku-edge);
+  border-radius: 12px;
+  box-shadow: 4px 4px 0 var(--hku-shadow);
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--hku-text);
+  animation: hku-pop-in var(--hku-dur-base) var(--hku-bounce) both;
+}
+
+.hku-pop::before {
+  content: "";
+  position: absolute;
+  left: -2px;
+  top: 10px;
+  bottom: 10px;
+  width: 5px;
+  background: var(--hku-sun);
+  border-radius: 3px;
+}
+
+@keyframes hku-pop-in {
+  from { opacity: 0; transform: translateY(-5px) scale(0.97); }
+  to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hku-pop { animation: none; }
+}
+
+/* --- bottom-ruled input — glow on focus --- */
 .hku-input {
   width: 100%;
   border: 0;
-  border-bottom: 2px solid var(--hku-line);
+  border-bottom: 2.5px solid var(--hku-line);
   background: transparent;
   font-family: var(--hku-serif);
-  font-size: 24px;
+  font-size: 27px;
   font-weight: 500;
   font-variant-numeric: tabular-nums;
-  color: var(--hku-ink);
+  color: var(--hku-text);
   padding: 6px 2px 8px;
   border-radius: 0;
   transition:
@@ -189,12 +342,12 @@
     background var(--hku-dur-base) ease-out;
 }
 
-.hku-input:hover:not(:disabled) { border-bottom-color: rgba(34, 48, 44, 0.45); }
+.hku-input:hover:not(:disabled) { border-bottom-color: rgba(242, 236, 221, 0.55); }
 
 .hku-input:focus {
   outline: none;
-  border-bottom-color: var(--hku-gold);
-  background: rgba(0, 83, 78, 0.05);
+  border-bottom-color: var(--hku-coral);
+  background: rgba(255, 210, 63, 0.12);   /* soft sunshine wash */
 }
 
 .hku-input:disabled { opacity: 0.45; }
@@ -209,7 +362,7 @@
 .hku-hint {
   display: block;
   margin-top: 6px;
-  font-size: 11px;
+  font-size: 11.5px;
   letter-spacing: 0.05em;
   color: var(--hku-muted);
 }
@@ -218,28 +371,29 @@
   display: block;
   margin-top: 6px;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 700;
   color: var(--hku-brick);
 }
 
-/* ---- segmented Yes/No (real radios, dressed up) ---- */
+/* --- segmented Yes/No (real radios, dressed chunky) --- */
 .hku-seg {
   display: inline-flex;
-  border: 1.5px solid var(--hku-line);
-  border-radius: 10px;
+  border: 2.5px solid var(--hku-edge);
+  border-radius: 12px;
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.55);
+  background: var(--hku-card);
+  box-shadow: 3px 3px 0 var(--hku-shadow);
 }
 
 .hku-seg-opt {
   position: relative;
-  min-width: 96px;
-  min-height: 44px;              /* ≥44px touch target */
+  min-width: 104px;
+  min-height: 46px;              /* ≥44px touch target */
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 13.5px;
-  font-weight: 500;
+  font-size: 14px;
+  color: var(--hku-text);
   cursor: pointer;
   user-select: none;
   transition:
@@ -247,7 +401,7 @@
     color var(--hku-dur-fast) ease-out;
 }
 
-.hku-seg-opt + .hku-seg-opt { border-left: 1.5px solid var(--hku-line); }
+.hku-seg-opt + .hku-seg-opt { border-left: 2.5px solid var(--hku-edge); }
 
 .hku-seg-input {
   position: absolute;
@@ -257,64 +411,78 @@
   cursor: pointer;
 }
 
+.hku-seg-opt:hover:not(.is-on) { background: rgba(87, 217, 163, 0.14); }
+
+/* active choice = mint, not red — user asked the red gone */
 .hku-seg-opt.is-on {
-  background: var(--hku-green);
-  color: var(--hku-paper);
+  background: var(--hku-mint);
+  color: #0c1a14;
   font-weight: 700;
 }
 
 .hku-seg-opt:has(.hku-seg-input:focus-visible),
 .hku-seg-opt:focus-within {
-  outline: 2px solid var(--hku-gold);
+  outline: 2px solid var(--hku-coral);
   outline-offset: 2px;
   z-index: 1;
 }
 
 /* ======================= 5. summary + submit ======================= */
 .hku-summary {
-  border-left: 3px solid var(--hku-brick);
-  background: rgba(166, 58, 34, 0.07);
+  border: 2.5px solid var(--hku-brick);
+  border-radius: 12px;
+  background: rgba(255, 107, 74, 0.1);
   color: var(--hku-brick);
-  font-size: 13px;
+  font-size: 13.5px;
   line-height: 1.55;
-  padding: 10px 14px;
-  border-radius: 0 8px 8px 0;
+  padding: 12px 16px;
   margin: 0;
 }
 
-.hku-submit {
+/* the big happy button: deep coral slab, hard shadow, playful tilt.
+   Selector is prefixed with .hku-ledger on purpose — styles.css has
+   button[type="submit"] (0,1,1) which beats a bare .hku-submit (0,1,0)
+   and paints the button BLUE. (0,2,0) wins back the cascade. */
+.hku-ledger button.hku-submit {
   width: 100%;
-  min-height: 52px;
-  border: 0;
-  border-radius: 10px;
-  background: var(--hku-green);
-  color: var(--hku-paper);
+  min-height: 58px;
+  border: 2.5px solid var(--hku-shadow);
+  border-radius: 14px;
+  background: var(--hku-coral-deep, #f05a33);
+  color: var(--hku-ink);
   font-family: var(--hku-sans);
-  font-size: 13px;
+  font-size: 17px;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   cursor: pointer;
+  box-shadow: 6px 6px 0 var(--hku-shadow);
   transition:
-    background var(--hku-dur-base) ease-out,
-    transform var(--hku-dur-base) var(--hku-ease);
+    transform var(--hku-dur-fast) var(--hku-bounce),
+    box-shadow var(--hku-dur-fast) var(--hku-ease),
+    background var(--hku-dur-base) ease-out;
 }
 
-.hku-submit:hover:not(:disabled) {
-  background: var(--hku-green-deep);
-  transform: translateY(-1px);
+.hku-ledger button.hku-submit:hover:not(:disabled) {
+  background: var(--hku-coral);
+  transform: translate(-2px, -3px) rotate(-1deg);
+  box-shadow: 8px 9px 0 var(--hku-shadow);
 }
 
-.hku-submit:active:not(:disabled) { transform: translateY(0); }
-
-.hku-submit:focus-visible {
-  outline: 2px solid var(--hku-gold);
-  outline-offset: 3px;
+.hku-ledger button.hku-submit:active:not(:disabled) {
+  transform: translate(4px, 4px);
+  box-shadow: 1px 1px 0 var(--hku-shadow);
 }
 
-.hku-submit:disabled {
+.hku-ledger button.hku-submit:focus-visible {
+  outline: 2px solid var(--hku-sun);
+  outline-offset: 4px;
+}
+
+.hku-ledger button.hku-submit:disabled {
   cursor: default;
   opacity: 0.65;
+  box-shadow: 6px 6px 0 var(--hku-shadow);
 }
 
 /* ======================= 6. motion + responsive ======================= */
@@ -336,10 +504,17 @@
 }
 
 @media (max-width: 860px) {
-  .hku-shell { grid-template-columns: 1fr; max-width: 560px; }
-  .hku-rail { padding: 32px 28px 26px; gap: 12px; }
+  .hku-shell { grid-template-columns: 1fr; min-height: 0; }
+  .hku-rail {
+    position: static;
+    height: auto;
+    padding: 36px 28px 28px;
+    gap: 12px;
+    border-right: 0;
+    border-bottom: 3px solid var(--hku-shadow);
+  }
   .hku-rail-foot { display: none; }
-  .hku-ledger { padding: 28px 24px; }
+  .hku-ledger { padding: 32px 22px 40px; }
 }
 
 @media (max-width: 560px) {
