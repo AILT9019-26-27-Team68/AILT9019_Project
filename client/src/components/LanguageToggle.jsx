@@ -6,11 +6,11 @@ export default function LanguageToggle({ value, onChange }) {
       {SUPPORTED_LOCALES.map((code) => (
         <button
           key={code}
-          // TODO: Set title attribute to LOCALE_LABELS[code].full
-          // TODO: Set className to "active" if value === code.
-          // TODO: Add onClick handler to call onChange(code).
+          title={LOCALE_LABELS[code].full}
+          className={value === code ? "active" : ""}
+          onClick={() => onChange(code)}
         >
-          {/* TODO: Render LOCALE_LABELS[code].short */}
+          {LOCALE_LABELS[code].short}
         </button>
       ))}
     </div>
