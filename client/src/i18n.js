@@ -34,6 +34,47 @@ export const translations = {
     submitLoading: "Analysing...",
     range: "range",
 
+    railKicker: "The University of Hong Kong",
+    railHeading: "Start your check-in",
+    railStep1: "Fill in the form on the right — it takes under a minute.",
+    railStep2: "Our model reads your numbers and checks them instantly.",
+    railStep3: "You get simple, friendly coaching advice based on the result.",
+    railPrivate: "Private by design",
+    railSupport: "Need support?",
+    railFoot: "HKU · CEDARS · Student Wellbeing",
+
+    options: { Yes: "Yes", No: "No" },
+
+    errors: {
+      required: "This field is required.",
+      notNumber: "Please enter a number.",
+      outOfRange: (min, max) => `Please enter a value between ${min} and ${max}.`,
+      notInteger: "Please enter a whole number.",
+      summary: (count) =>
+        `${count} field${count > 1 ? "s" : ""} need${
+          count > 1 ? "" : "s"
+        } attention before the analysis can run.`,
+    },
+    infoLabel: (name) => `About: ${name}`,
+
+    info: {
+      Study_Hours_Per_Day:
+        "Hours you spend studying on a typical day. Example: 3 means about three hours of revision daily.",
+      Sleep_Hours_Per_Day:
+        "Hours of sleep on a typical night. 7–9 is the usual healthy range for students.",
+      Stress_Level:
+        "How stressed you feel day to day, from 0 (fully calm) to 10 (overwhelmed).",
+      Attendance_Rate:
+        "Percentage of classes you actually attend. 85 means you miss roughly 1 in 7.",
+      Age: "Your age in years.",
+      Extracurricular_Activities:
+        "Are you in any clubs, sports teams, or societies outside class?",
+      Exam_Proximity:
+        "Is an important exam coming up soon (within the next few weeks)?",
+      Part_Time_Job:
+        "Do you currently work a part-time job alongside your studies?",
+    },
+
     loadingTitle: "Analysing your profile…",
     loadingSub: "This may take up to 30 seconds.",
     resultTitle: "Your check-in result",
@@ -83,6 +124,43 @@ export const translations = {
     submitLoading: "分析中...",
     range: "範圍",
 
+    railKicker: "香港大學",
+    railHeading: "開始你的檢查",
+    railStep1: "在右邊填寫表格，一分鐘內即可完成。",
+    railStep2: "我們的模型會即時讀取並分析你的數據。",
+    railStep3: "你會根據結果獲得簡單、親切的指導建議。",
+    railPrivate: "設計上保護私隱",
+    railSupport: "需要支援？",
+    railFoot: "HKU · CEDARS · 學生身心健康",
+
+    options: { Yes: "是", No: "否" },
+
+    errors: {
+      required: "此欄為必填。",
+      notNumber: "請輸入數字。",
+      outOfRange: (min, max) => `請輸入 ${min} 至 ${max} 之間的數值。`,
+      notInteger: "請輸入整數。",
+      summary: (count) =>
+        `有 ${count} 個欄位需要處理，才能開始分析。`,
+    },
+    infoLabel: (name) => `關於：${name}`,
+
+    info: {
+      Study_Hours_Per_Day:
+        "你平日每天用於學習的時數。例如：3 代表每天約三小時溫習。",
+      Sleep_Hours_Per_Day:
+        "你一般每晚的睡眠時數。對學生而言，7–9 小時是常見的健康範圍。",
+      Stress_Level:
+        "你日常感受到的壓力，由 0（完全平靜）至 10（不勝負荷）。",
+      Attendance_Rate:
+        "你實際出席課堂的百分比。85 代表大約每七堂缺席一堂。",
+      Age: "你的年齡（歲）。",
+      Extracurricular_Activities:
+        "你是否有參加課堂以外的學會、運動隊或社團？",
+      Exam_Proximity: "短期內（未來數週）是否有重要考試？",
+      Part_Time_Job: "你目前是否有在學業以外從事兼職工作？",
+    },
+
     loadingTitle: "正在分析你的資料…",
     loadingSub: "可能需要最多 30 秒。",
     resultTitle: "你的檢查結果",
@@ -130,6 +208,42 @@ export const translations = {
     submit: "获取建议",
     submitLoading: "分析中...",
     range: "范围",
+
+    railKicker: "香港大学",
+    railHeading: "开始你的检查",
+    railStep1: "在右边填写表格，一分钟内即可完成。",
+    railStep2: "我们的模型会即时读取并分析你的数据。",
+    railStep3: "你会根据结果获得简单、友好的辅导建议。",
+    railPrivate: "设计上保护隐私",
+    railSupport: "需要支持？",
+    railFoot: "HKU · CEDARS · 学生身心健康",
+
+    options: { Yes: "是", No: "否" },
+
+    errors: {
+      required: "此项为必填。",
+      notNumber: "请输入数字。",
+      outOfRange: (min, max) => `请输入 ${min} 至 ${max} 之间的数值。`,
+      notInteger: "请输入整数。",
+      summary: (count) => `有 ${count} 个字段需要处理，才能开始分析。`,
+    },
+    infoLabel: (name) => `关于：${name}`,
+
+    info: {
+      Study_Hours_Per_Day:
+        "你平日每天用于学习的小时数。例如：3 代表每天约三小时复习。",
+      Sleep_Hours_Per_Day:
+        "你通常每晚的睡眠时数。对学生而言，7–9 小时是常见的健康范围。",
+      Stress_Level:
+        "你日常感受到的压力，从 0（完全平静）到 10（不堪重负）。",
+      Attendance_Rate:
+        "你实际出席课堂的百分比。85 代表大约每七节课缺席一节。",
+      Age: "你的年龄（岁）。",
+      Extracurricular_Activities:
+        "你是否有参加课外社团、运动队或学会？",
+      Exam_Proximity: "近期（未来几周）是否有重要考试？",
+      Part_Time_Job: "你目前是否在学业之外从事兼职工作？",
+    },
 
     loadingTitle: "正在分析您的资料…",
     loadingSub: "这可能需要最多 30 秒。",
