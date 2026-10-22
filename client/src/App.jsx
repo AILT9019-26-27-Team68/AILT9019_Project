@@ -52,12 +52,12 @@ export default function App() {
       <Disclaimer t={t} />
 
       {/* TODO: Display t.loadingForm if !schema and !error. */}
-      {/* TODO: Display error banner if error is set. */}
+      {/* DONE: Display error banner if error is set. */}
       {error && <div className="error">{error}</div>}
 
       {schema && (
         <>
-          {/* TODO: Render <InputForm> passing schema, handleSubmit, loading, and t. */}
+          {/* DONE: Render <InputForm> passing schema, handleSubmit, loading, and t. */}
           <InputForm
             schema={schema}
             onSubmit={handleSubmit}
@@ -67,7 +67,7 @@ export default function App() {
 
           {/* TODO: If loading is true, render a div with className="loading-box" containing a spinner div, t.loadingTitle, and t.loadingSub. */}
 
-          {/* TODO: If result exists, render <RiskResult> passing result and t. */}
+          {/* DONE: If result exists, render <RiskResult> passing result and t. */}
           {result && <RiskResult result={result} t={t} />}
         </>
       )}

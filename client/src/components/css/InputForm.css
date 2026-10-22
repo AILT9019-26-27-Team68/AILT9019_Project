@@ -1,0 +1,348 @@
+/* ---------------------------------------------------------------------------
+ * InputForm.css — the single stylesheet for the "HKU registrar's ledger"
+ * form. Everything lives here: tokens at the top, then shell/rail layout,
+ * then field-level styling. Selector prefix .hku- keeps it isolated from
+ * styles.css. Restyling = edit this one file.
+ * ------------------------------------------------------------------------ */
+
+/* Display (Fraunces) + body (Karla); CJK falls back to system faces. */
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Karla:wght@400;500;700&display=swap");
+
+/* ======================= 1. tokens ======================= */
+.hku-shell {
+  /* colour */
+  --hku-green: #00534e;        /* dominant surface / primary action */
+  --hku-green-deep: #04352f;   /* rail background, button hover */
+  --hku-gold: #c9a24b;         /* single accent: rules, crest, focus rings */
+  --hku-paper: #f6f3ec;        /* ledger surface */
+  --hku-paper-dim: rgba(243, 239, 230, 0.72);
+  --hku-ink: #22302c;          /* body text on paper */
+  --hku-muted: #5c6b64;        /* hints, secondary text */
+  --hku-brick: #a63a22;        /* errors (warm, palette-consistent) */
+  --hku-line: rgba(34, 48, 44, 0.22);
+
+  /* type */
+  --hku-serif: "Fraunces", Georgia, "Noto Serif TC", serif;
+  --hku-sans: "Karla", "PingFang TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+
+  /* motion */
+  --hku-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --hku-dur-fast: 160ms;
+  --hku-dur-base: 180ms;
+  --hku-dur-scene: 600ms;
+}
+
+/* ======================= 2. shell + rail ======================= */
+.hku-shell {
+  position: relative;
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  max-width: 1060px;
+  margin: 8px auto 32px;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(4, 53, 47, 0.25);
+  box-shadow:
+    0 2px 6px rgba(4, 53, 47, 0.08),
+    0 24px 64px rgba(4, 53, 47, 0.18);
+  font-family: var(--hku-sans);
+  color: var(--hku-ink);
+  text-align: left;
+}
+
+/* paper grain over the whole panel — atmosphere, not flat fill */
+.hku-shell::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.hku-rail {
+  position: relative;
+  background:
+    radial-gradient(26rem 20rem at -10% -10%, rgba(201, 162, 75, 0.14), transparent 60%),
+    var(--hku-green-deep);
+  color: #f3efe6;
+  padding: 44px 32px 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.hku-crest { display: block; }
+
+.hku-kicker {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--hku-gold);
+  margin: 6px 0 0;
+}
+
+.hku-title {
+  font-family: var(--hku-serif);
+  font-size: 30px;
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.hku-sub {
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: var(--hku-paper-dim);
+  margin: 0;
+}
+
+.hku-rule {
+  width: 44px;
+  height: 2px;
+  background: var(--hku-gold);
+  border: 0;
+  margin: 4px 0 0;
+}
+
+.hku-rail-foot {
+  margin-top: auto;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(243, 239, 230, 0.45);
+}
+
+/* ======================= 3. ledger ======================= */
+.hku-ledger {
+  background: var(--hku-paper);
+  padding: 36px 40px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.hku-group-head {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.hku-group-no {
+  font-family: var(--hku-serif);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--hku-gold);
+}
+
+.hku-group-rule {
+  flex: 1;
+  height: 1px;
+  background: var(--hku-line);
+  border: 0;
+  margin: 0;
+}
+
+.hku-fields {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 22px 24px;
+}
+
+/* alternating spans give the grid an editorial rhythm (3-3 / 2-2-2) */
+.hku-field         { grid-column: span 3; }
+.hku-field--narrow { grid-column: span 2; }
+
+/* reset fieldset chrome — groups are semantic, not visual boxes */
+.hku-group { border: 0; padding: 0; margin: 0; }
+
+/* ======================= 4. fields ======================= */
+.hku-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--hku-muted);
+  margin-bottom: 6px;
+}
+
+/* bottom-ruled input — a ledger line, not a boxed widget */
+.hku-input {
+  width: 100%;
+  border: 0;
+  border-bottom: 2px solid var(--hku-line);
+  background: transparent;
+  font-family: var(--hku-serif);
+  font-size: 24px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--hku-ink);
+  padding: 6px 2px 8px;
+  border-radius: 0;
+  transition:
+    border-color var(--hku-dur-base) ease-out,
+    background var(--hku-dur-base) ease-out;
+}
+
+.hku-input:hover:not(:disabled) { border-bottom-color: rgba(34, 48, 44, 0.45); }
+
+.hku-input:focus {
+  outline: none;
+  border-bottom-color: var(--hku-gold);
+  background: rgba(0, 83, 78, 0.05);
+}
+
+.hku-input:disabled { opacity: 0.45; }
+
+/* native spinners off — keyboard arrows still step */
+.hku-input::-webkit-outer-spin-button,
+.hku-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.hku-input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
+
+.hku-input[aria-invalid="true"] { border-bottom-color: var(--hku-brick); }
+
+.hku-hint {
+  display: block;
+  margin-top: 6px;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: var(--hku-muted);
+}
+
+.hku-err {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--hku-brick);
+}
+
+/* ---- segmented Yes/No (real radios, dressed up) ---- */
+.hku-seg {
+  display: inline-flex;
+  border: 1.5px solid var(--hku-line);
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.hku-seg-opt {
+  position: relative;
+  min-width: 96px;
+  min-height: 44px;              /* ≥44px touch target */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+  transition:
+    background var(--hku-dur-fast) ease-out,
+    color var(--hku-dur-fast) ease-out;
+}
+
+.hku-seg-opt + .hku-seg-opt { border-left: 1.5px solid var(--hku-line); }
+
+.hku-seg-input {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.hku-seg-opt.is-on {
+  background: var(--hku-green);
+  color: var(--hku-paper);
+  font-weight: 700;
+}
+
+.hku-seg-opt:has(.hku-seg-input:focus-visible),
+.hku-seg-opt:focus-within {
+  outline: 2px solid var(--hku-gold);
+  outline-offset: 2px;
+  z-index: 1;
+}
+
+/* ======================= 5. summary + submit ======================= */
+.hku-summary {
+  border-left: 3px solid var(--hku-brick);
+  background: rgba(166, 58, 34, 0.07);
+  color: var(--hku-brick);
+  font-size: 13px;
+  line-height: 1.55;
+  padding: 10px 14px;
+  border-radius: 0 8px 8px 0;
+  margin: 0;
+}
+
+.hku-submit {
+  width: 100%;
+  min-height: 52px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--hku-green);
+  color: var(--hku-paper);
+  font-family: var(--hku-sans);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background var(--hku-dur-base) ease-out,
+    transform var(--hku-dur-base) var(--hku-ease);
+}
+
+.hku-submit:hover:not(:disabled) {
+  background: var(--hku-green-deep);
+  transform: translateY(-1px);
+}
+
+.hku-submit:active:not(:disabled) { transform: translateY(0); }
+
+.hku-submit:focus-visible {
+  outline: 2px solid var(--hku-gold);
+  outline-offset: 3px;
+}
+
+.hku-submit:disabled {
+  cursor: default;
+  opacity: 0.65;
+}
+
+/* ======================= 6. motion + responsive ======================= */
+/* one orchestrated entrance: rail → numerics → circumstances → button */
+.hku-rv { animation: hku-rise var(--hku-dur-scene) var(--hku-ease) both; }
+.hku-rv-1 { animation-delay: 0ms; }
+.hku-rv-2 { animation-delay: 90ms; }
+.hku-rv-3 { animation-delay: 180ms; }
+.hku-rv-4 { animation-delay: 270ms; }
+
+@keyframes hku-rise {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hku-rv { animation: none; }
+  .hku-shell *, .hku-shell *::after { transition: none !important; }
+}
+
+@media (max-width: 860px) {
+  .hku-shell { grid-template-columns: 1fr; max-width: 560px; }
+  .hku-rail { padding: 32px 28px 26px; gap: 12px; }
+  .hku-rail-foot { display: none; }
+  .hku-ledger { padding: 28px 24px; }
+}
+
+@media (max-width: 560px) {
+  .hku-fields { grid-template-columns: 1fr 1fr; }
+  .hku-field, .hku-field--narrow { grid-column: span 2; }
+}
