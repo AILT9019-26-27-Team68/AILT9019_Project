@@ -55,8 +55,8 @@ const APP_CSS = `
     grid-row: 1 / span 2;
     display: inline-flex;
     align-self: center;
-    background: #f5f1e4;
-    border: 2.5px solid #e9e1ca;
+    background: #ffffff;
+    border: 2.5px solid #ffffff;
     border-radius: 12px;
     padding: 6px 8px;
     box-shadow: 3px 3px 0 #050907;
