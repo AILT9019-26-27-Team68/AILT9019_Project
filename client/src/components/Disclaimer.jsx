@@ -1,12 +1,10 @@
 export default function Disclaimer({ t }) {
   return (
     <div className="disclaimer">
-      {/* TODO: Render t.disclaimerTitle inside a <strong> tag. */}
-      {/* TODO: Render t.disclaimerBody. */}
+      <strong>{t.disclaimerTitle}</strong> {t.disclaimerBody}
       <br />
-      {/* TODO: Render t.disclaimerCrisis. */}
-      {/* TODO: Render t.disclaimerCedars inside a <strong> tag. */}
-      {/* TODO: Render t.disclaimerEmergency. */}
+      {t.disclaimerCrisis} <strong>{t.disclaimerCedars}</strong>{" "}
+      {t.disclaimerEmergency}
     </div>
   );
 }
