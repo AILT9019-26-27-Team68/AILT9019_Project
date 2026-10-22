@@ -36,6 +36,9 @@ export const translations = {
 
     loadingTitle: "Analysing your profile…",
     loadingSub: "This may take up to 30 seconds.",
+    resultTitle: "Your check-in result",
+    viewAdvice: "View advice",
+    closeResult: "Close result",
 
     keyFactors: "Key factors",
     zBands: "Numeric z-score bands",
@@ -82,6 +85,9 @@ export const translations = {
 
     loadingTitle: "正在分析你的資料…",
     loadingSub: "可能需要最多 30 秒。",
+    resultTitle: "你的檢查結果",
+    viewAdvice: "查看建議",
+    closeResult: "關閉結果",
 
     keyFactors: "主要因素",
     zBands: "數值 z 分數區間",
@@ -127,6 +133,9 @@ export const translations = {
 
     loadingTitle: "正在分析您的资料…",
     loadingSub: "这可能需要最多 30 秒。",
+    resultTitle: "您的检查结果",
+    viewAdvice: "查看建议",
+    closeResult: "关闭结果",
 
     keyFactors: "主要因素",
     zBands: "数值 z 分数区间",
