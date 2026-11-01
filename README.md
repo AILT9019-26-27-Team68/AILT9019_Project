@@ -65,17 +65,17 @@ The repository already contains the trained `student_risk_model.joblib` and the
 dataset `student_performance.csv`. You do **not** need to retrain to use the app.
 
     git clone <repo-url>
-    cd student-risk-predictor
+    cd AILT9019_Project
 
     cp .env.example .env
     # Windows PowerShell: Copy-Item .env.example .env
     # edit .env and set BAILIAN_API_KEY
 
     python -m venv .venv
-    # macOS / Linux:
-    source .venv/bin/activate
-    # Windows PowerShell:
-    .venv\Scripts\Activate.ps1
+    # activate the venv — pick the ONE line for your shell (universal):
+    #   Windows cmd:         .venv\Scripts\activate.bat
+    #   Windows PowerShell:  Set-ExecutionPolicy -Scope Process Bypass; .venv\Scripts\Activate.ps1
+    #   macOS / Linux bash:  source .venv/bin/activate
 
     pip install -r python/requirements.txt    # or: npm run py:install
 
@@ -96,8 +96,9 @@ and `npm run dev:client` if you need to debug one layer at a time.
 To build the client for production, run `npm --prefix client run build`; the
 static bundle is written to `client/dist/`.
 
-Keep the virtual environment active in the terminal that runs `npm run dev`:
-the PY process launches `uvicorn` from that environment.
+No need to keep the virtual environment active for `npm run dev`:
+the PY script launches uvicorn via `.venv\Scripts\python.exe` directly
+(and falls back to a global `uvicorn` if `.venv` does not exist).
 
 Notes:
 

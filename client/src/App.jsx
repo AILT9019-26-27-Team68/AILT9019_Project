@@ -4,6 +4,7 @@ import { getTranslations } from "./i18n.js";
 import InputForm from "./components/InputForm.jsx";
 import RiskResult from "./components/RiskResult.jsx";
 import Disclaimer from "./components/Disclaimer.jsx";
+import ResultDeck from "./components/ResultDeck.jsx";
 import LanguageToggle from "./components/LanguageToggle.jsx";
 import hkuCrest from "./assets/hku-crest.png";
 
@@ -13,6 +14,7 @@ import hkuCrest from "./assets/hku-crest.png";
    green base, cream sticker borders, coral/sunshine accents. Everything else
    still comes from styles.css (untouched). */
 const APP_CSS = `
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
   .app {
     position: relative;
     z-index: 1;
@@ -42,7 +44,7 @@ const APP_CSS = `
   /* professional header: official crest left, centered title, toggle right.
      Sans-serif stack just for the header — reads institutional, not playful. */
   header {
-    --header-sans: "Segoe UI", "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+    --header-sans: "Inter", "Segoe UI", "Helvetica Neue", Arial, "Noto Sans", sans-serif;
     display: grid;
     grid-template-columns: auto 1fr auto;
     align-items: center;
@@ -796,6 +798,13 @@ export default function App() {
                 <RiskResult result={result} t={t} />
               </div>
             </div>
+          )}
+
+          {/* Seven-page result deck. The modal above stays mounted but is hidden
+              by ResultDeck.css while this is open, so only one aria-modal is
+              live at a time. Remove this line plus the import to revert. */}
+          {result && resultOpen && (
+            <ResultDeck result={result} language={language} t={t} onClose={closeResult} />
           )}
         </>
       )}
