@@ -17,9 +17,9 @@
     <rect x="30" y="118" width="200" height="150" rx="12" fill="#16241d" stroke="#e9e1ca" stroke-width="2.5" />
     <rect x="30" y="118" width="200" height="8" rx="4" fill="#ff6b4a" />
     <text x="50" y="158" fill="#ffd23f" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="700" letter-spacing="0.16em">01 · INPUT</text>
-    <text x="50" y="186" fill="#f2ecdd" font-family="Georgia, 'Times New Roman', serif" font-size="20" font-weight="700">8 structured fields</text>
-    <text x="50" y="210" fill="#a3b3a8" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">Study · sleep · stress</text>
-    <text x="50" y="229" fill="#a3b3a8" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">Attendance · age · activities</text>
+    <text x="50" y="186" fill="#f2ecdd" font-family="Georgia, 'Times New Roman', serif" font-size="22" font-weight="700">8 inputs</text>
+    <text x="50" y="210" fill="#a3b3a8" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">5 numeric + 3 categorical</text>
+    <text x="50" y="229" fill="#a3b3a8" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">Study · sleep · stress</text>
     <text x="50" y="250" fill="#57d9a3" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="700">NO FREE TEXT</text>
   </g>
 
