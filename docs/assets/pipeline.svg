@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 360" role="img" aria-labelledby="title desc">
+  <title id="title">Student Risk Predictor pipeline</title>
+  <desc id="desc">Eight structured inputs pass through Express validation to FastAPI and a Random Forest model, then a page-contract prompt to Alibaba Cloud Bailian, and finally a result deck.</desc>
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 1 1 L 11 6 L 1 11 z" fill="#ffd23f" />
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1200" height="360" rx="18" fill="#101b16" />
+  <text x="40" y="44" fill="#f2ecdd" font-family="Georgia, 'Times New Roman', serif" font-size="24" font-weight="700">One request, five deliberate stages</text>
+  <text x="40" y="68" fill="#a3b3a8" font-family="Segoe UI, Arial, sans-serif" font-size="12.5" letter-spacing="0.04em">The predicting model and the writing model are separate. The LLM receives bands and signals, never raw numeric inputs.</text>
+
+  <!-- stage 1 -->
+  <g>
+    <rect x="30" y="118" width="200" height="150" rx="12" fill="#16241d" stroke="#e9e1ca" stroke-width="2.5" />
+    <rect x="30" y="118" width="200" height="8" rx="4" fill="#ff6b4a" />
+    <text x="50" y="158" fill="#ffd23f" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="700" letter-spacing="0.16em">01 · INPUT</text>
+    <text x="50" y="186" fill="#f2ecdd" font-family="Georgia, 'Times New Roman', serif" font-size="20" font-weight="700">8 structured fields</text>
+    <text x="50" y="210" fill="#a3b3a8" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">Study · sleep · stress</text>
+    <text x="50" y="229" fill="#a3b3a8" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">Attendance · age · activities</text>
+    <text x="50" y="250" fill="#57d9a3" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="700">NO FREE TEXT</text>
+  </g>
+
+  <!-- stage 2 -->
+  <g>
+    <rect x="260" y="118" width="200" height="150" rx="12" fill="#16241d" stroke="#e9e1ca" stroke-width="2.5" />
+    <rect x="260" y="118" width="200" height="8" rx="4" fill="#ffd23f" />
+    <text x="280" y="158" fill="#ffd23f" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="700" letter-spacing="0.16em">02 · VALIDATE</text>
+    <text x="280" y="186" fill="#f2ecdd" font-family="Georgia, 'Times New Roman', serif" font-size="20" font-weight="700">Express schema</text>
+    <text x="280" y="210" fill="#a3b3a8" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">Ranges + allow-lists</text>
+    <text x="280" y="229" fill="#a3b3a8" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">Reject missing, wrong type,</text>
+    <text x="280" y="248" fill="#a3b3a8" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">out-of-range or injected data</text>
+  </g>
+
+  <!-- stage 3 -->
+  <g>
+    <rect x="490" y="118" width="200" height="150" rx="12" fill="#16241d" stroke="#e9e1ca" stroke-width="2.5" />
+    <rect x="490" y="118" width="200" height="8" rx="4" fill="#57d9a3" />
+    <text x="510" y="158" fill="#ffd23f" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="700" letter-spacing="0.16em">03 · PREDICT</text>
+    <text x="510" y="186" fill="#f2ecdd" font-family="Georgia, 'Times New Roman', serif" font-size="20" font-weight="700">FastAPI + RF</text>
+    <text x="510" y="210" fill="#a3b3a8" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">Risk score · tier · z-bands</text>
+    <text x="510" y="229" fill="#a3b3a8" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">Categorical signals</text>
+    <text x="510" y="250" fill="#ff8a75" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="700">CRISIS RULE</text>
+  </g>
+
+  <!-- stage 4 -->
+  <g>
+    <rect x="720" y="118" width="200" height="150" rx="12" fill="#16241d" stroke="#e9e1ca" stroke-width="2.5" />
+    <rect x="720" y="118" width="200" height="8" rx="4" fill="#ff6b4a" />
+    <text x="740" y="158" fill="#ffd23f" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="700" letter-spacing="0.16em">04 · CONTRACT</text>
+    <text x="740" y="186" fill="#f2ecdd" font-family="Georgia, 'Times New Roman', serif" font-size="20" font-weight="700">Bailian LLM</text>
+    <text x="740" y="210" fill="#a3b3a8" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">Page headings + rules</text>
+    <text x="740" y="229" fill="#a3b3a8" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">DeepSeek · Qwen · Kimi</text>
+    <text x="740" y="250" fill="#57d9a3" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="700">SAFE FALLBACK</text>
+  </g>
+
+  <!-- stage 5 -->
+  <g>
+    <rect x="950" y="118" width="220" height="150" rx="12" fill="#16241d" stroke="#e9e1ca" stroke-width="2.5" />
+    <rect x="950" y="118" width="220" height="8" rx="4" fill="#ffd23f" />
+    <text x="970" y="158" fill="#ffd23f" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="700" letter-spacing="0.16em">05 · RESULT</text>
+    <text x="970" y="186" fill="#f2ecdd" font-family="Georgia, 'Times New Roman', serif" font-size="20" font-weight="700">Scroll-snap deck</text>
+    <text x="970" y="210" fill="#a3b3a8" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">5–8 pages · three languages</text>
+    <text x="970" y="229" fill="#a3b3a8" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">MCP tools reuse the core</text>
+    <text x="970" y="250" fill="#57d9a3" font-family="Segoe UI, Arial, sans-serif" font-size="10.5" font-weight="700">NO STORAGE</text>
+  </g>
+
+  <!-- arrows -->
+  <g stroke="#ffd23f" stroke-width="2.5" marker-end="url(#arrow)">
+    <line x1="234" y1="193" x2="252" y2="193" />
+    <line x1="464" y1="193" x2="482" y2="193" />
+    <line x1="694" y1="193" x2="712" y2="193" />
+    <line x1="924" y1="193" x2="942" y2="193" />
+  </g>
+
+  <text x="30" y="316" fill="#a3b3a8" font-family="Segoe UI, Arial, sans-serif" font-size="11">Calibrated model:</text>
+  <text x="140" y="316" fill="#f2ecdd" font-family="Segoe UI, Arial, sans-serif" font-size="11">87.5% accuracy · 86.67% At-Risk recall · 0.51 threshold</text>
+  <text x="700" y="316" fill="#a3b3a8" font-family="Segoe UI, Arial, sans-serif" font-size="11">Crisis gate:</text>
+  <text x="775" y="316" fill="#f2ecdd" font-family="Segoe UI, Arial, sans-serif" font-size="11">Stress ≥ 9 and Sleep ≤ 3 → CEDARS-aware prompt</text>
+</svg>

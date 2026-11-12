@@ -7,6 +7,8 @@ web UI.
 
 This project is **not** a diagnostic or clinical tool.
 
+**Public project page:** https://ailt9019-26-27-team68.github.io/AILT9019_Project/
+
 ---
 
 ## Architecture
@@ -28,7 +30,7 @@ This project is **not** a diagnostic or clinical tool.
   Exposes `GET /health`, `GET /api/schema` and `POST /api/predict`.
 - `client/` — React + Vite UI: dark "night sticker" theme with the HKU crest,
   schema-driven form with field help, English / 繁體中文 / 简体中文 interface,
-  loading toast, result modal with Markdown advice, and a right-edge tab that
+  loading toast, scroll-snap result deck, and a right-edge tab that
   reopens the last advice. The Vite dev proxy forwards `/api` to Express on
   port 5000.
 - `train_model.py` — trains and evaluates the Random Forest; writes

@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Student Risk Predictor · AILT9019 Team 68</title>
+    <meta
+      name="description"
+      content="A private, structured check-in that combines a Random Forest risk model with privacy-preserving LLM coaching for HKU students."
+    />
+    <meta property="og:title" content="Student Risk Predictor · AILT9019 Team 68" />
+    <meta
+      property="og:description"
+      content="Eight structured inputs → Random Forest risk + z-bands + crisis rule → evidence-based coaching deck. Not a diagnostic tool."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="assets/result-deck.png" />
+    <link rel="icon" href="assets/crest.png" type="image/png" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <a class="brand" href="./" aria-label="Student Risk Predictor home">
+        <img class="brand-crest" src="assets/crest.png" alt="" width="40" height="42" />
+        <span>
+          <strong>Student Risk Predictor</strong>
+          <small>AILT9019 · Team 68 · HKU</small>
+        </span>
+      </a>
+      <nav aria-label="Sections">
+        <a href="#problem">Problem</a>
+        <a href="#pipeline">Pipeline</a>
+        <a href="#evidence">Evidence</a>
+        <a href="#ethics">Ethics</a>
+      </nav>
+      <a class="button button-small" href="https://github.com/AILT9019-26-27-Team68/AILT9019_Project" target="_blank" rel="noreferrer">
+        GitHub
+      </a>
+    </header>
+
+    <main id="main">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow">AILT9019 · AI Literacy II · 2026</p>
+          <h1 id="hero-title">A private check-in for the student week.</h1>
+          <p class="lede">
+            Eight structured inputs become a calibrated academic-risk estimate,
+            peer-relative z-score bands and a crisis-aware coaching deck — without
+            free text, accounts or stored personal data.
+          </p>
+          <div class="actions">
+            <a class="button" href="https://github.com/AILT9019-26-27-Team68/AILT9019_Project" target="_blank" rel="noreferrer">
+              View the repository
+            </a>
+            <a class="button button-ghost" href="https://github.com/AILT9019-26-27-Team68/AILT9019_Project/blob/main/README.md" target="_blank" rel="noreferrer">
+              Read the README
+            </a>
+          </div>
+          <p class="fine">Informational coaching only. Not a diagnosis, not counselling, not a decision about your academic standing.</p>
+        </div>
+
+        <figure class="hero-shot">
+          <img src="assets/result-deck.png" alt="The result deck showing where eight inputs sit against the model's peer averages" width="1280" height="800" />
+          <figcaption>
+            <span>Live result deck</span>
+            <span>01 / 08 · Where your inputs sit</span>
+          </figcaption>
+        </figure>
+      </section>
+
+      <section class="stats" aria-label="Key results">
+        <div><strong>87.5%</strong><span>hold-out accuracy</span></div>
+        <div><strong>86.67%</strong><span>At-Risk recall</span></div>
+        <div><strong>8/10</strong><span>normal fixed-set tiers</span></div>
+        <div><strong>3/3</strong><span>crisis cases with CEDARS</span></div>
+      </section>
+
+      <section id="problem" class="section split" aria-labelledby="problem-title">
+        <div>
+          <p class="eyebrow">01 · The problem</p>
+          <h2 id="problem-title">Students need a mirror, not another chatbot.</h2>
+        </div>
+        <div class="prose">
+          <p>
+            Academic pressure, irregular sleep and lifestyle stress often show up
+            as a vague feeling that things are slipping. General-purpose chatbots
+            can produce reassuring text, but they have no calibrated notion of
+            academic risk and no consistent way to compare a student's week with
+            their peers.
+          </p>
+          <p>
+            Counselling is valuable but scarce, and many students are not ready
+            for a conversation. The project asks a narrower question: can a small,
+            auditable model give a student a private, structured starting point
+            for reflection — and know when to point to a human?
+          </p>
+          <p>
+            It is for HKU students reflecting on study, sleep, stress, attendance,
+            extracurriculars, exams, part-time work and age. It is <strong>not</strong>
+            for diagnosis, mental-health assessment, academic decisions or emergency
+            response.
+          </p>
+        </div>
+      </section>
+
+      <section id="pipeline" class="section" aria-labelledby="pipeline-title">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">02 · The pipeline</p>
+            <h2 id="pipeline-title">From eight values to a page-by-page read.</h2>
+          </div>
+          <p class="section-note">
+            The model that predicts is separate from the model that writes. The
+            LLM never sees raw numeric inputs — only the risk tier, score, bands,
+            categorical signals and a page contract.
+          </p>
+        </div>
+        <figure class="pipeline-figure">
+          <img src="assets/pipeline.svg" alt="Input form to Express validation, Random Forest inference, page-contract prompt, Bailian LLM, and result deck" width="1200" height="360" />
+        </figure>
+      </section>
+
+      <section id="built" class="section" aria-labelledby="built-title">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">03 · What we built</p>
+            <h2 id="built-title">A full path, not a prompt wrapper.</h2>
+          </div>
+        </div>
+        <div class="cards">
+          <article class="card">
+            <span class="card-no">01</span>
+            <h3>Random Forest + peer bands</h3>
+            <p>
+              A scikit-learn pipeline trained on 1,000 student records, with
+              stratified 80/20 evaluation, class-weighted search, a tuned 0.51
+              threshold and four display tiers. Numeric values become z-score
+              bands; categoricals become qualitative signals.
+            </p>
+          </article>
+          <article class="card">
+            <span class="card-no">02</span>
+            <h3>Validated Express → FastAPI path</h3>
+            <p>
+              No free-text fields. The API accepts exactly five numeric and three
+              categorical fields, enforces ranges and allow-lists, and rejects
+              malformed or injected payloads before inference.
+            </p>
+          </article>
+          <article class="card">
+            <span class="card-no">03</span>
+            <h3>Page-contract coaching</h3>
+            <p>
+              A server-side pattern picker and prompt contract turn one LLM reply
+              into a 5–8 page result deck. A structured crisis rule routes to a
+              CEDARS-aware template; ordinary cases are told not to mention CEDARS.
+            </p>
+          </article>
+          <article class="card">
+            <span class="card-no">04</span>
+            <h3>Deck, fallback and MCP</h3>
+            <p>
+              A trilingual scroll-snap deck, a visible fallback when live advice
+              fails, and two FastMCP tools (<code>predict_risk</code>,
+              <code>get_advice</code>) that wrap the same core path.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section id="evidence" class="section" aria-labelledby="evidence-title">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">04 · Evidence</p>
+            <h2 id="evidence-title">What was measured, not assumed.</h2>
+          </div>
+          <p class="section-note">
+            Test data and thresholds are documented in the repository. These are
+            the final runs used for the report.
+          </p>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <caption>Evaluation snapshot</caption>
+            <thead>
+              <tr><th scope="col">Check</th><th scope="col">Result</th><th scope="col">Evidence</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Random Forest hold-out (200 records)</td><td><strong>87.5%</strong> accuracy; <strong>86.67%</strong> At-Risk recall; 85.71% precision; 86.19% F1</td><td><code>train_model.py</code></td></tr>
+              <tr><td>Fixed set — normal profiles</td><td><strong>8/10</strong> expected tiers matched (pass rule ≥8)</td><td><code>python/test_fixed_set.py</code></td></tr>
+              <tr><td>Fixed set — crisis profiles</td><td><strong>3/3</strong> flagged; all tested models mentioned CEDARS</td><td><code>test_fixed_set.py</code>; LLM comparison</td></tr>
+              <tr><td>Input validation</td><td><strong>8/8</strong> rejected with a clean 4xx (missing, type, range, allow-list, SQL injection)</td><td><code>test_fixed_set.py --validate-only</code></td></tr>
+              <tr><td>MCP smoke test</td><td><strong>PASS</strong> — both tools; crisis advice mentions CEDARS</td><td><code>python/test_mcp.py</code></td></tr>
+              <tr><td>DeepSeek / Qwen / Kimi</td><td>CEDARS <strong>3/3</strong> crisis, <strong>0/10</strong> normal; mean latency 6.8 s / 15.3 s / 5.8 s</td><td><code>reports/llm_comparison_analysis.md</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="evidence-note">
+          The LLM comparison ran 39 live calls across the 13 fixed-set cases.
+          Qwen's 32.5 s outlier is a boundary case for the UI's 30-second copy;
+          the production default remains DeepSeek v4.1 flash.
+        </p>
+      </section>
+
+      <section id="ethics" class="section split" aria-labelledby="ethics-title">
+        <div>
+          <p class="eyebrow">05 · Responsible by design</p>
+          <h2 id="ethics-title">The limits are part of the product.</h2>
+        </div>
+        <div>
+          <ul class="checks">
+            <li><strong>No free text.</strong> Only eight structured fields; no place to paste a prompt or personal story.</li>
+            <li><strong>No persistence.</strong> No database, accounts, cookies or local storage. The last advice is held in memory only for the session.</li>
+            <li><strong>Bands, not raw numbers.</strong> The LLM receives the tier, score, z-score bands and categorical signals — not names, IDs or raw numeric inputs.</li>
+            <li><strong>Crisis routing.</strong> Extreme stress + minimal sleep selects a CEDARS-aware prompt; the UI also shows a fixed support line.</li>
+            <li><strong>Honest fallback.</strong> If the LLM fails, the app shows a stored safety message instead of pretending the model ran.</li>
+            <li><strong>Not clinical.</strong> The interface and README state that this is not diagnosis, counselling or an academic decision.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="run" class="section run" aria-labelledby="run-title">
+        <div>
+          <p class="eyebrow">06 · Reproduce</p>
+          <h2 id="run-title">Run the same path locally.</h2>
+          <p class="prose">
+            Clone the public repository, create the Python environment, add a
+            Bailian API key to <code>.env</code>, install the Node packages and
+            start all three services. The README has the exact commands,
+            troubleshooting and the fixed test set.
+          </p>
+          <div class="actions">
+            <a class="button" href="https://github.com/AILT9019-26-27-Team68/AILT9019_Project" target="_blank" rel="noreferrer">Repository</a>
+            <a class="button button-ghost" href="https://github.com/AILT9019-26-27-Team68/AILT9019_Project/blob/main/README.md" target="_blank" rel="noreferrer">Setup guide</a>
+          </div>
+        </div>
+        <pre class="code" aria-label="Quick start commands"><code>git clone https://github.com/AILT9019-26-27-Team68/AILT9019_Project
+cd AILT9019_Project
+python -m venv .venv
+.venv\Scripts\Activate.ps1   # Windows
+pip install -r python/requirements.txt
+npm run install:all
+npm run dev                  # PY :8000 · API :5000 · WEB :5173</code></pre>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div>
+        <strong>Student Risk Predictor</strong>
+        <p>AILT9019 · AI Literacy II · Team 68 · The University of Hong Kong</p>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/AILT9019-26-27-Team68/AILT9019_Project" target="_blank" rel="noreferrer">GitHub</a>
+        <a href="https://github.com/AILT9019-26-27-Team68/AILT9019_Project/blob/main/README.md" target="_blank" rel="noreferrer">README</a>
+        <a href="https://github.com/AILT9019-26-27-Team68/AILT9019_Project/blob/main/reports/llm_comparison_analysis.md" target="_blank" rel="noreferrer">LLM comparison</a>
+      </div>
+      <p class="footer-fine">Informational coaching only. If you are in distress, contact HKU CEDARS or campus support; if in immediate danger, contact emergency services.</p>
+    </footer>
+  </body>
+</html>
