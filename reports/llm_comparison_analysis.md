@@ -297,7 +297,7 @@ Its main trade-off is ~1 s slower than Kimi and the most expensive suite cost du
 
 Kimi is the fastest and has the best conversational crisis tone. It passes CEDARS 3/3 and normal 0/10. If you switch to it:
 
-- Add the CEDARS definition to the system prompt: “CEDARS = Centre for Development of Academic and Career Skills.”
+- Add the CEDARS definition to the system prompt: “CEDARS = Centre of Development and Resources for Students.”
 - Add a sentence to the prompt: “Use the provided risk tier explicitly; high attendance and protective signals are strengths, not risks.”
 - Add a post-generation guard for crisis cases (CEDARS must appear) and for the CEDARS expansion.
 
