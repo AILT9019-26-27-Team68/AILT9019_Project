@@ -2,8 +2,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { fetchSchema, predict } from "./api.js";
 import { getTranslations } from "./i18n.js";
 import InputForm from "./components/InputForm.jsx";
-import RiskResult from "./components/RiskResult.jsx";
 import Disclaimer from "./components/Disclaimer.jsx";
+import ResultDeck from "./components/ResultDeck.jsx";
 import LanguageToggle from "./components/LanguageToggle.jsx";
 import hkuCrest from "./assets/hku-crest.png";
 
@@ -42,7 +42,7 @@ const APP_CSS = `
   /* professional header: official crest left, centered title, toggle right.
      Sans-serif stack just for the header — reads institutional, not playful. */
   header {
-    --header-sans: "Segoe UI", "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+    --header-sans: "Inter", "Segoe UI", "Helvetica Neue", Arial, "Noto Sans", sans-serif;
     display: grid;
     grid-template-columns: auto 1fr auto;
     align-items: center;
@@ -773,29 +773,10 @@ export default function App() {
             </div>
           )}
 
-          {/* DONE: If result exists, render <RiskResult> inside a full-screen
-              sticker-card modal. ✕ button, backdrop click, or Escape closes;
+          {/* Multi-page result deck. It is the only result dialog on screen;
               closing keeps the result so the tab above can reopen it. */}
           {result && resultOpen && (
-            <div className="result-overlay" onClick={closeResult}>
-              <div
-                className="result-card"
-                role="dialog"
-                aria-modal="true"
-                aria-label={t.resultTitle}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <button
-                  type="button"
-                  className="result-close"
-                  onClick={closeResult}
-                  aria-label={t.closeResult}
-                >
-                  ✕
-                </button>
-                <RiskResult result={result} t={t} />
-              </div>
-            </div>
+            <ResultDeck result={result} language={language} t={t} onClose={closeResult} />
           )}
         </>
       )}
