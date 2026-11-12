@@ -96,9 +96,8 @@ and `npm run dev:client` if you need to debug one layer at a time.
 To build the client for production, run `npm --prefix client run build`; the
 static bundle is written to `client/dist/`.
 
-No need to keep the virtual environment active for `npm run dev`:
-the PY script launches uvicorn via `.venv\Scripts\python.exe` directly
-(and falls back to a global `uvicorn` if `.venv` does not exist).
+Keep the virtual environment active in the terminal that runs `npm run dev`:
+the PY process launches `uvicorn` from that environment.
 
 Notes:
 

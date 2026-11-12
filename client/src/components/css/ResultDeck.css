@@ -1,14 +1,9 @@
 @import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap");
 
 /* ==========================================================================
-   Result deck — seven full-height pages in one snapped scroll surface.
-   Scoped entirely under .deck-root; nothing here reaches the app behind it
-   except the single rule that hides the old result modal while the deck is up.
+   Result deck — full-height pages in one snapped scroll surface.
+   Scoped entirely under .deck-root.
    ========================================================================== */
-
-body:has(.deck-root) .result-overlay {
-  visibility: hidden;
-}
 
 .deck-root {
   --night: #101b16;
@@ -1270,6 +1265,13 @@ body:has(.deck-root) .result-overlay {
   .deck-close { width: 36px; height: 36px; font-size: 14px; }
   .archetype { max-width: 100%; }
   .rail { grid-template-columns: 58px 1fr 78px; }
+}
+
+@media (max-height: 840px) {
+  /* page 1's second fine-print line would sit under the footer on short
+     laptop screens; the first (threshold) line is the important one. */
+  .deck-page[data-page="p01"] .deck-fine--rail { display: none; }
+  .deck-hint { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {

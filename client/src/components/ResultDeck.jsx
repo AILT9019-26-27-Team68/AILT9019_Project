@@ -89,6 +89,41 @@ export default function ResultDeck({ result, language, t, onClose }) {
     if (rootRef.current) rootRef.current.focus({ preventScroll: true });
   }, []);
 
+  /* keep focus inside the deck; Escape closes it */
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return undefined;
+
+    function onKeyDown(e) {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        onClose();
+        return;
+      }
+      if (e.key !== "Tab") return;
+
+      const focusable = Array.from(
+        root.querySelectorAll(
+          'button:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])'
+        )
+      ).filter((el) => el.offsetParent !== null);
+      if (focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+
+    root.addEventListener("keydown", onKeyDown);
+    return () => root.removeEventListener("keydown", onKeyDown);
+  }, [onClose]);
+
   /* the opening beat, and its own teardown */
   useEffect(() => {
     if (!intro) return undefined;
@@ -263,7 +298,9 @@ export default function ResultDeck({ result, language, t, onClose }) {
               {copy.pages.p01.scaleCaption(Math.round(model.threshold * 100))}
             </p>
           )}
-          {!model.crisis && <p className="deck-fine">{copy.pages.p01.railNote}</p>}
+          {!model.crisis && (
+            <p className="deck-fine deck-fine--rail">{copy.pages.p01.railNote}</p>
+          )}
         </>
       );
     }
@@ -304,7 +341,11 @@ export default function ResultDeck({ result, language, t, onClose }) {
           {single ? (
             <>
               <p className={`deck-note ${model.usedFallback ? "" : "is-muted"}`}>
-                {model.usedFallback ? copy.fallback.unavailable : copy.fallback.empty}
+                {model.usedFallback
+                  ? copy.fallback.unavailable
+                  : model.advice
+                    ? copy.fallback.full
+                    : copy.fallback.empty}
               </p>
               {model.advice ? (
                 <div className="deck-prose deck-prose--tight">

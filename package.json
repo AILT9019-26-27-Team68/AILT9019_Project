@@ -5,9 +5,7 @@
   "scripts": {
     "install:all": "npm install && npm --prefix server install && npm --prefix client install",
     "py:install": "pip install -r python/requirements.txt",
-    "dev:py:local": ".venv\\Scripts\\python.exe -m uvicorn python.inference_service:app --host 127.0.0.1 --port 8000 --reload",
-    "dev:py:global": "uvicorn python.inference_service:app --host 127.0.0.1 --port 8000 --reload",
-    "dev:py": "npm run dev:py:local || npm run dev:py:global",
+    "dev:py": "uvicorn python.inference_service:app --host 127.0.0.1 --port 8000 --reload",
     "dev:server": "npm --prefix server run dev",
     "dev:client": "npm --prefix client run dev",
     "dev": "concurrently -k -n PY,API,WEB \"npm run dev:py\" \"npm run dev:server\" \"npm run dev:client\"",

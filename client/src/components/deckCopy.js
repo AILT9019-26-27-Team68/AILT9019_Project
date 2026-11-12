@@ -109,8 +109,8 @@ const en = {
       ],
       supportTitle: "If you'd rather talk to a person",
       supportBody:
-        "HKU CEDARS — Counselling and Person Enrichment — sees students without a referral. If you are in immediate danger, contact emergency services.",
-      again: "Run another check-in",
+        "HKU CEDARS — Centre of Development and Resources for Students — sees students without a referral. If you are in immediate danger, contact emergency services.",
+      again: "Back to the form",
       close: "Close",
     },
   },
@@ -140,6 +140,7 @@ const en = {
   fallback: {
     unavailable: "The coach couldn't be reached just now. Standard guidance is shown below.",
     empty: "Nothing came back from the coach this time. Your numbers and the support page are still here.",
+    full: "Showing the coach's full reply below.",
   },
 
   /**
@@ -226,7 +227,7 @@ const zhHant = {
   intro: {
     kicker: "你的檢查",
     words: ["你的", "結果"],
-    sub: "七頁，讀自你輸入的八項資料。不會留下任何紀錄。",
+    sub: "幾頁，讀自你輸入的八項資料。不會留下任何紀錄。",
     skip: "點任何位置即可略過",
   },
 
@@ -307,8 +308,8 @@ const zhHant = {
       ],
       supportTitle: "想找真人談談",
       supportBody:
-        "香港大學 CEDARS（輔導及個人發展中心）接受學生直接求助，無需轉介。如有即時危險，請聯絡緊急服務。",
-      again: "再測一次",
+        "香港大學 CEDARS 接受學生直接求助，無需轉介。如有即時危險，請聯絡緊急服務。",
+      again: "返回表格",
       close: "關閉",
     },
   },
@@ -331,6 +332,7 @@ const zhHant = {
   fallback: {
     unavailable: "暫時未能連接教練，以下為標準指引。",
     empty: "教練這次沒有回覆。你的數字與支援頁仍然在這裡。",
+    full: "以下顯示教練的完整回覆。",
   },
 
   archetypes: {
@@ -411,7 +413,7 @@ const zhHans = {
   intro: {
     kicker: "你的检查",
     words: ["你的", "结果"],
-    sub: "七页，读自你输入的八项数据。不会留下任何记录。",
+    sub: "几页，读自你输入的八项数据。不会留下任何记录。",
     skip: "点任何位置即可跳过",
   },
 
@@ -492,8 +494,8 @@ const zhHans = {
       ],
       supportTitle: "想找真人聊聊",
       supportBody:
-        "香港大学 CEDARS（辅导及个人发展中心）接受学生直接求助，无需转介。如有即时危险，请联系紧急服务。",
-      again: "再测一次",
+        "香港大学 CEDARS 接受学生直接求助，无需转介。如有即时危险，请联系紧急服务。",
+      again: "返回表单",
       close: "关闭",
     },
   },
@@ -516,6 +518,7 @@ const zhHans = {
   fallback: {
     unavailable: "暂时未能连接教练，以下为标准指引。",
     empty: "教练这次没有回复。你的数字与支持页仍然在这里。",
+    full: "以下显示教练的完整回复。",
   },
 
   archetypes: {
