@@ -73,7 +73,7 @@ dataset `student_performance.csv`. You do **not** need to retrain to use the app
     # Windows PowerShell: Copy-Item .env.example .env
     # edit .env and set BAILIAN_API_KEY
 
-    python -m venv .venv
+    python -m venv .venv          # macOS / Linux: use python3 -m venv .venv
     # activate the venv — pick the ONE line for your shell (universal):
     #   Windows cmd:         .venv\Scripts\activate.bat
     #   Windows PowerShell:  Set-ExecutionPolicy -Scope Process Bypass; .venv\Scripts\Activate.ps1
